@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+:root {
+  --bg:#2d2d2d;--surface:#232323;--surface2:#2a2a2a;--surface3:#313131;
+  --border:#3a3a3a;--border2:#555;--text:#f0f0f0;--text2:#c8c8c8;--muted:#999;
+  --accent:#7592f2;--accent-dim:#151b35;--accent-border:#2a3560;
+  --danger:#e05555;--warn:#d4a04a;--success:#5a9e6f;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:12px;}
+
+#nameScreen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;background:var(--bg);}
+.chia-logo{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:#fff;letter-spacing:-0.03em;}
+.chia-logo span{color:var(--accent);}
+.chia-tag{font-size:10px;color:#aaa;letter-spacing:0.2em;text-transform:uppercase;}
+.name-box{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:320px;}
+.name-label{font-size:11px;color:var(--text2);}
+.name-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:14px;color:#fff;outline:none;text-align:center;transition:border-color 0.2s;}
+.name-input:focus{border-color:var(--accent);}
+.name-input::placeholder{color:#777;}
+.main-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:10px 28px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:opacity 0.2s;width:100%;}
+.main-btn:hover{opacity:0.85;}
+
+#clientScreen{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;background:var(--bg);}
+.client-select-wrap{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;}
+.client-select-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;}
+.client-dropdown{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;outline:none;cursor:pointer;appearance:none;transition:border-color 0.2s;}
+.client-dropdown:focus{border-color:var(--accent);}
+.client-dropdown option{background:var(--surface2);color:#fff;}
+
+#toolScreen{flex:1;display:none;flex-direction:column;}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.tlogo{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;flex-shrink:0;}
+.tlogo span{color:var(--accent);}
+
+/* BACK BUTTON — clearly readable */
+.back-btn{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:5px 11px;font-size:10px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;transition:all 0.15s;}
+.back-btn:hover{color:#fff;border-color:#888;}
+
+.client-badge{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:5px;padding:4px 10px;font-size:10px;color:#a0b4ff;}
+
+/* ANGLE BUTTONS — high contrast text */
+.angle-selector{display:flex;gap:6px;flex-wrap:wrap;}
+.angle-btn{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:5px 11px;font-size:10px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;line-height:1.4;transition:all 0.15s;}
+.angle-btn:hover{color:#fff;border-color:#888;background:#3a3a3a;}
+.angle-btn.active{background:var(--accent-dim);border-color:var(--accent);color:#c0ccff;font-weight:600;}
+
+.input-area{display:flex;gap:7px;margin-left:auto;flex-shrink:0;}
+
+/* URL INPUT — white text, visible placeholder */
+.url-input{background:#3a3a3a;border:1px solid #666;border-radius:5px;padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#fff;width:220px;outline:none;transition:border-color 0.2s;}
+.url-input:focus{border-color:var(--accent);}
+.url-input::placeholder{color:#aaa;}
+
+/* RESEARCH BUTTON — solid accent, white text */
+.research-btn{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:7px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;letter-spacing:0.04em;}
+.research-btn:hover{opacity:0.85;}
+.research-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+.main{display:flex;flex:1;overflow:hidden;}
+
+.brain-panel{width:215px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;padding:14px;}
+.panel-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#888;margin-bottom:10px;}
+.ccm{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:11px;margin-bottom:11px;}
+.ccm-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+.ccm-role{font-size:9px;color:#999;line-height:1.5;margin-bottom:5px;}
+.ccm-goal{font-size:9px;color:var(--accent);}
+.stats-row{display:flex;gap:5px;margin-bottom:11px;}
+.stat-box{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:7px;text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:16px;color:var(--accent);display:block;line-height:1;}
+.stat-label{font-size:8px;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+.bs{margin-bottom:12px;}
+.bst{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.bi{font-size:9px;color:#aaa;line-height:1.6;padding:3px 0;border-bottom:1px solid var(--border);}
+.bi:last-child{border-bottom:none;}
+.bi strong{color:#ccc;}
+.av{font-size:9px;color:var(--danger);padding:3px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.5;}
+.av::before{content:'✕';font-size:8px;flex-shrink:0;margin-top:2px;}
+.angle-box{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:6px;padding:10px 11px;margin-bottom:11px;}
+.angle-box-title{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#a0b4ff;margin-bottom:5px;}
+.angle-box-text{font-size:9px;color:#c0c8e8;line-height:1.65;}
+
+.cards-area{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px;background:var(--bg);}
+.status-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;font-size:10px;color:#aaa;}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+.rcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeUp 0.4s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.guest-banner{background:#1a1f08;border-bottom:1px solid #2a3510;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:9px;color:#b8d44a;}
+.connection-banner{background:#0f1a2e;border-bottom:1px solid #1a3050;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:9px;color:#6aacf0;}
+
+.rcard-top{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border);}
+.show-art{width:52px;height:52px;border-radius:7px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.show-meta{flex:1;min-width:0;}
+.show-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;line-height:1.3;}
+.show-host{font-size:9px;color:#999;margin-bottom:8px;}
+.social-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
+.social-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:9px;display:flex;flex-direction:column;gap:1px;}
+.social-chip-platform{color:#888;font-size:8px;}
+.social-chip-followers{color:#fff;font-weight:600;}
+.social-chip-na{color:#888;font-style:italic;}
+.downloads-badge{display:inline-flex;align-items:center;gap:5px;background:#1a1f0a;border:1px solid #2a3a10;border-radius:4px;padding:4px 9px;font-size:9px;color:#8fc44a;}
+.fit-badge{padding:4px 10px;border-radius:20px;font-size:9px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.fit-strong{background:#0d1a0f;border:1px solid #2a4a2e;color:#7dcf8a;}
+.fit-possible{background:#1a1500;border:1px solid #4a3a10;color:var(--warn);}
+
+.sec{padding:11px 15px;border-bottom:1px solid var(--border);}
+.sl{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#a0b4ff;margin-bottom:6px;}
+.st{font-size:10.5px;line-height:1.75;color:#c8c8c8;}
+.st strong{color:#fff;}
+.ep-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:4px;padding:4px 9px;font-size:9px;color:#a0b4ff;margin-top:7px;cursor:pointer;text-decoration:none;}
+
+.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.audience-box{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:9px 10px;}
+.audience-box-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#a0b4ff;margin-bottom:5px;}
+.audience-box-text{font-size:9.5px;color:#c0c0c0;line-height:1.65;}
+
+.diff-row{display:flex;gap:8px;margin-top:10px;}
+.diff-box{flex:1;border-radius:5px;padding:8px 10px;}
+.diff-same{background:#101a10;border:1px solid #1a3a1a;}
+.diff-diff{background:#0d1520;border:1px solid #1a2a40;}
+.diff-box-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;}
+.diff-same .diff-box-label{color:#6db87a;}
+.diff-diff .diff-box-label{color:#6a9aee;}
+.diff-box-text{font-size:9.5px;line-height:1.6;color:#c0c0c0;}
+.diff-verdict{font-size:9px;padding:6px 10px;border-radius:4px;margin-top:6px;}
+.verdict-now{background:#0d1a0f;border:1px solid #2a4a2e;color:#7dcf8a;}
+.verdict-wait{background:#1a1500;border:1px solid #4a3a10;color:var(--warn);}
+.verdict-angle{background:var(--accent-dim);border:1px solid var(--accent-border);color:#a0b4ff;}
+
+.devil-section{background:#1e1010;border-bottom:1px solid #3a1515;padding:11px 15px;}
+.devil-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#e07070;margin-bottom:6px;}
+.devil-item{font-size:10px;color:#c08080;line-height:1.7;padding:3px 0;display:flex;align-items:flex-start;gap:7px;}
+.devil-item::before{content:'⚠';font-size:9px;flex-shrink:0;margin-top:2px;}
+.devil-note{font-size:9px;color:#888;margin-top:6px;font-style:italic;line-height:1.5;border-top:1px solid #3a1515;padding-top:6px;}
+
+.pitch-section{background:var(--surface2);padding:13px 15px;}
+.psb{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:2px 8px;font-size:9px;color:#a0b4ff;}
+
+/* STYLE TABS — high contrast */
+.style-selector-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px;}
+.style-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.style-tab{background:#3a3a3a;border:1px solid #666;border-radius:4px;padding:5px 10px;font-size:9px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;transition:all 0.15s;}
+.style-tab:hover{color:#fff;border-color:#999;background:#444;}
+.style-tab.active{background:var(--accent-dim);border-color:var(--accent);color:#c0ccff;font-weight:700;}
+
+.style-comparison{display:none;gap:10px;margin-bottom:12px;}
+.style-comparison.visible{display:flex;}
+.style-col{flex:1;background:#3a3a3a;border:1px solid #666;border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:8px;}
+.style-col-header{display:flex;align-items:center;justify-content:space-between;}
+.style-col-name{font-size:9px;color:#a0b4ff;letter-spacing:0.08em;font-weight:600;}
+.style-col-current{font-size:8px;color:#aaa;background:#2a2a2a;border:1px solid #555;border-radius:3px;padding:1px 6px;}
+.style-col-text{font-size:9.5px;line-height:1.75;color:#d0d0d0;white-space:pre-wrap;max-height:180px;overflow-y:auto;}
+.style-col-text .p{color:#a0b4ff;font-weight:500;}
+.style-col-text a{color:#7aacf0;text-decoration:underline;}
+.use-style-btn{background:#fff;color:#111;border:none;border-radius:5px;padding:7px 14px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;cursor:pointer;transition:opacity 0.2s;align-self:flex-start;letter-spacing:0.04em;}
+.use-style-btn:hover{opacity:0.85;}
+
+.pitch-edit-note{font-size:8px;color:#888;margin-bottom:6px;font-style:italic;}
+.pitch-body{font-size:10.5px;line-height:1.85;color:#d0d0d0;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:4px;padding:6px;transition:border-color 0.2s;min-height:60px;}
+.pitch-body:focus{border-color:#666;background:#333;}
+.pitch-body .p{color:#a0b4ff;font-weight:500;}
+.pitch-body a{color:#7aacf0;text-decoration:underline;}
+
+/* ACTION BUTTONS */
+.copy-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
+.btn-copy{background:#fff;color:#111;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;letter-spacing:0.03em;}
+.btn-copy:hover{opacity:0.85;}
+.btn-approve{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;letter-spacing:0.03em;}
+.btn-approve:hover{opacity:0.85;}
+
+.sequence-section{background:#0d1a0f;border:1px solid #1a3a1a;border-radius:6px;padding:14px 15px;margin-top:12px;}
+.seq-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#7dcf8a;margin-bottom:10px;}
+.seq-body{font-size:10.5px;line-height:1.85;color:#d0d0d0;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:4px;padding:4px;transition:border-color 0.2s;}
+.seq-body:focus{border-color:#1a3a1a;}
+.seq-body a{color:#7aacf0;text-decoration:underline;}
+.btn-copy-seq{background:#fff;color:#111;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-top:10px;letter-spacing:0.03em;}
+.btn-copy-seq:hover{opacity:0.85;}
+
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:6px;}
+.ei{font-size:32px;margin-bottom:8px;opacity:0.3;}
+.et{font-family:'Playfair Display',serif;font-size:17px;color:#fff;opacity:0.4;}
+.es{font-size:10px;color:#aaa;margin-bottom:12px;}
+.demo-links{display:flex;flex-direction:column;gap:5px;width:100%;max-width:300px;}
+.demo-link{background:var(--surface2);border:1px solid #555;border-radius:5px;padding:7px 12px;font-size:9px;color:#ccc;cursor:pointer;transition:all 0.15s;text-align:left;}
+.demo-link:hover{border-color:var(--accent);color:#a0b4ff;}
+</style>
+</head>
+<body>
+
+<div id="nameScreen">
+  <div style="text-align:center">
+    <div class="chia-logo">Chi<span>a</span></div>
+    <div class="chia-tag" style="margin-top:8px">Podcast pitch intelligence</div>
+  </div>
+  <div class="name-box">
+    <div class="name-label">What is your name?</div>
+    <input class="name-input" id="writerName" placeholder="Your first name" onkeydown="if(event.key==='Enter')confirmName()"/>
+    <button class="main-btn" onclick="confirmName()">Continue</button>
+  </div>
+</div>
+
+<div id="clientScreen">
+  <div style="text-align:center">
+    <div class="chia-logo" style="font-size:32px">Chi<span>a</span></div>
+    <div id="clientWelcome" style="font-size:11px;color:#ccc;margin-top:8px;"></div>
+  </div>
+  <div class="client-select-wrap">
+    <div class="client-select-label">Select your client</div>
+    <select class="client-dropdown" id="clientDropdown">
+      <option value="">Choose a client...</option>
+      <option value="zach">Zach Brittle</option>
+      <option value="kat">Kat Courtney</option>
+    </select>
+    <button class="main-btn" onclick="confirmClient()">Open workspace</button>
+  </div>
+</div>
+
+<div id="toolScreen">
+  <div class="topbar">
+    <div class="tlogo">Chi<span>a</span></div>
+    <button class="back-btn" onclick="goBack()">← Switch client</button>
+    <div class="client-badge" id="clientBadge"></div>
+    <div class="angle-selector" id="angleSelector"></div>
+    <div class="input-area">
+      <input class="url-input" id="urlInput" placeholder="Paste Apple Podcasts link…"/>
+      <button class="research-btn" id="researchBtn" onclick="startResearch()">Research →</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="brain-panel" id="brainPanel"></div>
+    <div class="cards-area" id="cardsArea">
+      <div class="empty-state" id="emptyState">
+        <div class="ei" id="emptyIcon">🎙</div>
+        <div class="et">Ready to research</div>
+        <div class="es">Paste the Apple Podcasts link above and hit Research.</div>
+        <div class="demo-links" id="demoLinks"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let writerName='';let activeClient=null;let activeAngle=null;
+
+const PITCH_STYLES={
+  'Intro Personalized':{desc:'First paragraph personalized — references a specific episode, host story, or something they said.',
+    get:(d,n)=>`Hi ${d.hf},\n\n<span class="p">${d.intro}</span>\n\n${d.body}\n\nWould you like to connect with ${d.cf}?\n\nBest,\n${n}\n\nPs — ${d.ps}`},
+  'Double Personalized':{desc:'Opening paragraph AND PS are both personalized.',
+    get:(d,n)=>`Hi ${d.hf},\n\n<span class="p">${d.intro}</span>\n\n${d.body}\n\nWould you like to connect with ${d.cf}?\n\nBest,\n${n}\n\n<span class="p">Ps — ${d.dps}</span>`},
+  'Fully Personalized':{desc:'No template — completely custom pitch written for this host specifically.',
+    get:(d,n)=>d.full.replace(/\[W\]/g,n)},
+  'Non Personalized':{desc:"Since your audience is interested in X, I'd like to connect you with...",
+    get:(d,n)=>`Hi ${d.hf},\n\nSince your audience is interested in ${d.topic}, I'd like to connect you with ${d.cn}.\n\n${d.body}\n\nWould you like to connect with ${d.cf}?\n\nBest,\n${n}\n\nPs — ${d.ps}`},
+  'PS Personalized':{desc:'Opening is non-personalized but personalization lives in the PS.',
+    get:(d,n)=>`Hi ${d.hf},\n\nSince your audience is interested in ${d.topic}, I'd like to connect you with ${d.cn}.\n\n${d.body}\n\nWould you like to connect with ${d.cf}?\n\nBest,\n${n}\n\n<span class="p">Ps — ${d.intro}</span>`},
+  'Podcast Swap':{desc:"Offers a podcast swap — client appears on their show, host appears on client's show.",
+    get:(d,n)=>`Hi ${d.hf},\n\nI'd love to suggest a podcast collaboration that lets you reach a new audience while your listeners gain something valuable in return.\n\nWould you and a partner like to be guests on ${d.clientShow}? ${d.swapDesc}\n\nAdditionally, ${d.cf} would love to join you on ${d.showName} and ${d.swapAngle}\n\n${d.body}\n\nWould you like to collaborate?\n\nBest,\n${n}\n\nPs — ${d.ps}`}
+};
+
+const PD={
+  zach_life:{hf:'Matt',cf:'Zach',cn:'Zach Brittle',clientShow:'Marriage Therapy Radio (4M+ downloads)',showName:'The Life Shift Podcast',
+    topic:'life-altering moments and the honest reality of what comes after',
+    intro:"You discussed sitting with the messy, day-to-day work of sobriety with guests like Hondu Knight and Ian Fee. Since your audience is interested in this topic, Zach Brittle can add plenty of value here and has an important message for your listeners about the after of sobriety.",
+    dps:"Matt, I noticed your show description talks about the moments that crack us open — Zach's Christmas tree story is exactly that. A moment so specific and physical it's impossible to forget.",
+    ps:'Check out his features in <a href="https://huffpost.com" target="_blank">Huffington Post</a>, <a href="https://washingtonpost.com" target="_blank">The Washington Post</a>, and <a href="https://vanityfair.com" target="_blank">Vanity Fair</a>, and hear his story on podcasts like <a href="https://hellosomedaycoaching.com" target="_blank">Hello Someday</a> and Mental Illness Happy Hour.',
+    swapDesc:'Marriage Therapy Radio shares authentic conversations with couples about love, growth, and navigating life together.',
+    swapAngle:'share how sobriety exposes what was really underneath the drinking.',
+    body:`For two decades, Zach, a Licensed Mental Health Counselor, Certified Gottman Therapist, Certified Relational Life Therapist, and host of Marriage Therapy Radio (4M+ downloads), numbed his anger with alcohol. As he put it, alcohol wasn't his drug of choice; it was rage.\n\nThis was exemplified by one of the angriest moments of his life, destroying an aluminum Christmas tree stand. He was stone-cold sober. No alcohol. No audience. He beat it, left the house to buy a hammer, came back, and kept going.\n\nHowever, on November 13, 2020, he took his last drink. Expecting his life to improve, Zach discovered that sobriety didn't make him calmer; it stripped away the numbing and exposed the real addiction underneath.\n\nZach says, "A miracle can happen in your life. You'll be aware of it while it's unfolding, and it won't look the way you think it will." The miracle, for him, wasn't harmony. It was that when things destabilized, he didn't drink, flee, rage, or collapse. He stayed.`,
+    full:`Hi Matt,\n\n<span class="p">You discussed sitting with the messy, day-to-day work of sobriety with guests like Hondu Knight and Ian Fee. Since your audience is interested in this topic, Zach Brittle can add plenty of value here and has an important message for your listeners about the after of sobriety.</span>\n\nFor two decades, Zach, a Licensed Mental Health Counselor, Certified Gottman Therapist, Certified Relational Life Therapist, and host of Marriage Therapy Radio (4M+ downloads), numbed his anger with alcohol. As he put it, alcohol wasn't his drug of choice; it was rage.\n\nThis was exemplified by one of the angriest moments of his life, destroying an aluminum Christmas tree stand. He was stone-cold sober. No alcohol. No audience. He beat it, left the house to buy a hammer, came back, and kept going.\n\nHowever, on November 13, 2020, he took his last drink. Expecting his life to improve, Zach discovered that sobriety didn't make him calmer; it stripped away the numbing and exposed the real addiction underneath.\n\nZach says, "A miracle can happen in your life. You'll be aware of it while it's unfolding, and it won't look the way you think it will." The miracle, for him, wasn't harmony. It was that when things destabilized, he didn't drink, flee, rage, or collapse. He stayed.\n\nHis story isn't about getting better. It's about staying present when rage surfaces, relationships destabilize, and the ending is unknown.\n\nZach would love to join you for an honest, unpolished conversation about his turning point of getting sober, and how it impacted his life in unexpected ways.\n\nWould you like to connect with Zach?\n\nBest,\n[W]\n\nPs — Check out his features in <a href="https://huffpost.com" target="_blank">Huffington Post</a>, <a href="https://washingtonpost.com" target="_blank">The Washington Post</a>, and <a href="https://vanityfair.com" target="_blank">Vanity Fair</a>, and hear his story on podcasts like <a href="https://hellosomedaycoaching.com" target="_blank">Hello Someday</a> and Mental Illness Happy Hour.`},
+  zach_mental:{hf:'Paul',cf:'Zach',cn:'Zach Brittle',clientShow:'Marriage Therapy Radio (4M+ downloads)',showName:'Mental Illness Happy Hour',
+    topic:'addiction, mental illness, shame, and the complicated aftermath of trying to get better',
+    intro:"Zach says he had an alcohol problem before he ever took his first drink. He was terrified he'd become his drunk Dad, whom he'd feared growing up. But despite becoming an alcoholic, it wasn't his real drug of choice — it was rage.",
+    dps:"Paul, the way you talk about endurance without redemption arcs is exactly what Zach's story is about. He stayed. That's the whole miracle.",
+    ps:'To get a feel for him as a guest, check out his episodes on top 0.5% podcasts like <a href="https://balancingactpodcast.com" target="_blank">Balancing Act</a> and <a href="https://hellosomedaycoaching.com" target="_blank">Hello Someday</a>, and the top 0.01% ranked <a href="https://couplethings.com" target="_blank">Couple Things</a>.',
+    swapDesc:'Marriage Therapy Radio shares authentic conversations with couples about love, growth, and navigating life together.',
+    swapAngle:'share how sobriety exposes what was really underneath the drinking.',
+    body:`This was exemplified by one of the angriest moments of his life, destroying an aluminum Christmas tree stand. He was stone-cold sober. No alcohol. No audience. He beat it, left the house to buy a hammer, came back, and kept going.\n\nOn November 13, 2020, he had his last drink — expecting his life to improve. What he got instead was raw anger. Sobriety didn't make him calmer, didn't improve his marriage, and didn't make him a better father.\n\nWhat changed things was finding emotional sobriety through relational recovery: a practice focused on changing how we show up in moments of stress, instead of trying to control or fix things.\n\nZach Brittle is a Licensed Mental Health Counselor, Certified Gottman Therapist, Certified Relational Life Therapist, and host of Marriage Therapy Radio (4M+ downloads).\n\nHe'd love to join you for an honest, unpolished conversation about sobriety, shame, rage, and the kind of endurance that doesn't come with redemption arcs — just integrity.`,
+    full:`Hi Paul,\n\n<span class="p">Zach says he had an alcohol problem before he ever took his first drink. He was terrified he'd become his drunk Dad, whom he'd feared growing up. But despite becoming an alcoholic, it wasn't his real drug of choice — it was rage.</span>\n\nThis was exemplified by one of the angriest moments of his life, destroying an aluminum Christmas tree stand. He was stone-cold sober. No alcohol. No audience. He beat it, left the house to buy a hammer, came back, and kept going.\n\nOn November 13, 2020, he had his last drink — expecting his life to improve. What he got instead was raw anger. Sobriety didn't make him calmer, didn't improve his marriage, and didn't make him a better father.\n\nHe'd love to join you for an honest, unpolished conversation about sobriety, shame, rage, and the kind of endurance that doesn't come with redemption arcs — just integrity.\n\nWould you like to connect with Zach?\n\nBest,\n[W]\n\nPs — To get a feel for him as a guest, check out his episodes on <a href="https://balancingactpodcast.com" target="_blank">Balancing Act</a> and <a href="https://hellosomedaycoaching.com" target="_blank">Hello Someday</a>, and the top 0.01% ranked <a href="https://couplethings.com" target="_blank">Couple Things</a>.`},
+  kat_psychedelic:{hf:'Paul',cf:'Kat',cn:'Kat Courtney',clientShow:'her community of 60,000+ people passionate about plant medicine',showName:'The Psychedelic Podcast',
+    topic:'responsible and intentional psychedelic use, integration, and the relationship between consciousness and healing',
+    intro:"When Kat appeared on your show, the conversation around responsible and intentional psychedelic use resonated with your audience. She'd love to come back with something she hasn't talked about publicly before.",
+    dps:"Paul, the way your show frames integration and the work that follows peak experiences is exactly the gap Kat's 30-nights story fills.",
+    ps:"She'd love to share the episode with her community of 60,000+ people passionate about plant medicine.",
+    swapDesc:'Plant Medicine People runs retreats, integration coaching, and ceremony work rooted in traditional Amazonian lineage training.',
+    swapAngle:'share what 30 consecutive nights of solo ayahuasca work taught her about stability versus intensity.',
+    body:`What happens when you drink ayahuasca for 30 consecutive nights — alone.\n\nNot what you might expect. Not a breakthrough. A lesson in what stability means versus what intensity feels like — and why chasing intensity is one of the most dangerous things a plant medicine practitioner can do.\n\nKat Courtney is a traditionally trained Ayahuasquera and Huachumera, founder of <a href="https://plantmedicinepeople.com" target="_blank">Plant Medicine People</a>, and co-founder of Bassé. She's participated in 1,500+ ceremonies over 20+ years, carrying the Shipibo-Conibo, Quechua-Lamista, and Chavin lineages.\n\nAs someone who also trained as a Death Doula, Kat has a unique lens on ego dissolution that most facilitators don't — she's sat with people at the actual threshold of death.`,
+    full:`Hi Paul,\n\n<span class="p">When Kat appeared on your show, the conversation around responsible and intentional psychedelic use resonated with your audience. She'd love to come back with something she hasn't talked about publicly before.</span>\n\nWhat happens when you drink ayahuasca for 30 consecutive nights — alone.\n\nNot what you might expect. Not a breakthrough. A lesson in what stability means versus what intensity feels like.\n\nKat Courtney is a traditionally trained Ayahuasquera and Huachumera, founder of <a href="https://plantmedicinepeople.com" target="_blank">Plant Medicine People</a>, and co-founder of Bassé.\n\nWould you like to reconnect with Kat?\n\nBest,\n[W]\n\nPs — She'd love to share the episode with her community of 60,000+ people passionate about plant medicine.`},
+  kat_death:{hf:'Amy',cf:'Kat',cn:'Kat Courtney',clientShow:"her community of 60,000+ conscious healing enthusiasts",showName:'Life, Death & The Space Between',
+    topic:'the space between living and dying and what becomes possible when you stop running from death',
+    intro:"Your show lives in the space between living and dying — and what becomes possible when you stop running from death. That's exactly where Kat Courtney does her most important work.",
+    dps:"Dr. Amy, the threshold most people never consciously cross is where Kat works every day — both in ceremony and at end of life. I think your listeners will feel that immediately.",
+    ps:"She'd love to share the episode with her community of 60,000+ people passionate about conscious healing.",
+    swapDesc:'Plant Medicine People runs retreats and integration coaching rooted in traditional Amazonian lineage training.',
+    swapAngle:'explore how death doula training creates safer ceremony containers for people who have never consciously sat with dying.',
+    body:`Kat is a traditionally trained Ayahuasquera and Huachumera, founder of <a href="https://plantmedicinepeople.com" target="_blank">Plant Medicine People</a>, and a certified Death Doula. She carries the Shipibo-Conibo, Quechua-Lamista, and Chavin lineages, with 1,500+ ceremonies over 20+ years.\n\nShe came to death doula work after losing her father. And what she discovered changed everything about how she holds ceremony space.\n\nWhen you've sat with someone at the threshold most people never consciously cross — not metaphorically, but in the room, in the final hours — you understand surrender differently.`,
+    full:`Hi Dr. Amy,\n\n<span class="p">Your show lives in the space between living and dying — and what becomes possible when you stop running from death. That's exactly where Kat Courtney does her most important work.</span>\n\nKat is a traditionally trained Ayahuasquera and Huachumera, founder of <a href="https://plantmedicinepeople.com" target="_blank">Plant Medicine People</a>, and a certified Death Doula. She carries the Shipibo-Conibo, Quechua-Lamista, and Chavin lineages, with 1,500+ ceremonies over 20+ years.\n\nShe came to death doula work after losing her father. And what she discovered changed everything about how she holds ceremony space.\n\nWould you like to speak with Kat?\n\nBest,\n[W]\n\nPs — She'd love to share the episode with her community of 60,000+ people passionate about conscious healing.`}
+};
+
+const CARDS={
+  zach_life:{name:'The Life Shift Podcast',host:'Matt Gilhooly · Weekly',art:'🔄',fit:'strong',fitLabel:'Strong Fit',
+    socials:[{p:'Instagram',h:'@thelifeshiftpodcast',f:'12.4K'},{p:'Twitter/X',h:'@mattgilhooly',f:'1.8K'},{p:'Website',h:'thelifeshiftpodcast.com',f:null}],
+    downloads:{ok:false,note:'Downloads not publicly listed'},guestAlert:false,personalConnection:null,
+    audience:{who:'Adults 30-55 who have experienced a significant life disruption — career loss, health crisis, divorce, or identity shift.',needs:'To feel less alone in their confusion and hear that others have rebuilt after falling apart.',struggles:'The gap between who they were before the event and who they are now. The shame of not bouncing back faster.',guestType:'Guests who have lived through a turning point and can speak honestly about the messy middle, not just the triumphant after.'},
+    host_profile:`Matt focuses on life-altering moments and the messy, day-to-day work that follows. He has featured guests like Hondu Knight and Ian Fee who speak to the honest reality of sobriety. His style is <strong>warm, unhurried, and deeply story-driven</strong> — he lets guests sit in the uncomfortable parts without rushing to resolution.`,
+    topic_gap:`The show has covered sobriety and recovery through lived experience. <strong>The specific angle of sobriety exposing a deeper addiction underneath — rage as the real drug of choice — has not been covered.</strong>`,
+    ep_match:{text:'Matt has featured guests on the messy reality of sobriety — Zach adds what sobriety exposes, not just what it removes',link:'',type:'gap'},
+    diff:{same:`Matt's past guests have covered the turning point of getting sober and the unexpected challenges that follow. Zach's story shares that structure.`,different:`Past guests speak from personal experience alone. Zach brings both lived story AND 20+ years of clinical insight. The rage-as-real-addiction framing and the Christmas tree story offer a specific, concrete moment this audience hasn't heard.`,verdict:'now',verdictText:'Pitch now — the angle is genuinely differentiated from what has been covered.'},
+    connection:`Matt's audience is drawn to honest storytelling. Zach's Christmas tree story — stone cold sober, destroying it with a hammer — is exactly the kind of moment this show was built for.`,
+    devil:[`Matt's show centers on singular turning points. Anchor the pitch on November 13, 2020 and let the rage story breathe.`,`The audience is drawn to personal stories, not frameworks. Save credentials for the PS only.`,`At ratings 149, this is a smaller show. Consider whether the audience size justifies the placement relative to the book launch goal.`],
+    devilNote:`Open with November 13, 2020. Keep credentials in the PS only. This pitch should read like a story, not a guest bio.`,
+    defaultStyle:'Fully Personalized',showPhrases:['messy, day-to-day work of sobriety','the after of sobriety','life-altering moments'],
+    fu1:`Hi Matt,\n\nAs you consider collaborating with Zach, I want to share a missing piece from the story above.\n\nAfter Zach and his wife stopped drinking, they realized their teenage daughter, living under their roof, had shut them out completely, struggling with substances and unhealthy relationships.\n\nZach describes this as the moment they were "fired as parents." There was no quick repair. The miracle wasn't reconciliation; it was staying present without forcing an outcome.\n\nZach would love to join you for a conversation that digs into what it feels like when getting healthier doesn't save the people you love, and how to live with the guilt, fear, and helplessness that follow.\n\nRather than offering answers, Zach can share a perspective on the parts of recovery that feel lonely, disorienting, and unfinished, so listeners can feel less alone in the places they're still struggling.\n\nTo get a feel for him as a guest, check out his episodes on top podcasts like Balancing Act, Hungry for Conversation, and The One Day At A Time Recovery Podcast.\n\nWould you like to connect with Zach?\n\nBest,\n[W]`,
+    fu2:`Hi Matt,\n\nI wanted to reach out one final time to see if you'd like to take this opportunity to connect with Zach.\n\nSince I haven't heard back from you, it suggests one of three things:\n\nYou're not currently looking for guests, so I'll give you some space.\nYou're still interested but just haven't had a chance to get back to me.\nYou've just discovered Breaking Bad for the first time and can't stop watching it.\n\nPlease let me know which one is true!\n\nBest,\n[W]`},
+  zach_mental:{name:'Mental Illness Happy Hour',host:'Paul Gilmartin · Weekly · ~70K monthly listeners',art:'🧠',fit:'strong',fitLabel:'Strong Fit',
+    socials:[{p:'Instagram',h:'@mentalpod',f:'18.7K'},{p:'Twitter/X',h:'@mentalpod',f:'42.1K'},{p:'Facebook',h:'mentalpod',f:'22.3K'},{p:'Website',h:'mentalpod.com',f:null}],
+    downloads:{ok:true,figure:'~70,000 monthly listeners',source:'self-reported on website'},guestAlert:false,personalConnection:null,
+    audience:{who:'Adults 25-50 living with or recovering from mental illness, addiction, trauma, or anxiety.',needs:'To feel less alone in their darkness. To hear that people who seem to have it together are also struggling.',struggles:'Shame around mental illness. The feeling that getting better means fixing yourself entirely.',guestType:'Guests who speak from inside the experience, not above it. Honesty carries more weight than credentials here.'},
+    host_profile:`Paul is a comedian and host who focuses on depression, addiction, anxiety, and trauma through raw, unfiltered conversations. His style is <strong>deeply honest, self-deprecating, and non-clinical</strong> — he values guests who don't offer tidy redemption arcs.`,
+    topic_gap:`<strong>The specific angle of rage as the real addiction beneath alcoholism — and sobriety making things worse before better — has not been covered from a therapist's lived perspective.</strong>`,
+    ep_match:{text:'No direct episode match — rage as the primary addiction is an unexplored angle here',link:'',type:'gap'},
+    diff:{same:`Paul's guests speak honestly about addiction and the complicated aftermath. Zach's story shares that unpolished, non-redemptive structure.`,different:`Most of Paul's guests are survivors sharing personal experience. Zach is both a survivor AND a clinician — he can name what's happening underneath the rage in a way that gives the audience a framework, not just a story.`,verdict:'now',verdictText:'Pitch now — the rage-as-real-addiction angle is a strong match for this audience.'},
+    connection:`Paul's audience is built for honest storytelling. Zach's Christmas tree moment — stone cold sober, buying a hammer, coming back — is the kind of specific, physical anchor that cuts through immediately.`,
+    devil:[`Paul's audience is highly attuned to inauthenticity. Any clinical framing will lose them. Credentials mentioned only once, briefly.`,`The sobriety angle is well-covered on this show. The differentiator — rage as the primary addiction — must be in the first two lines.`,`Paul does long, unstructured conversations. Zach needs to be prepared to sit with discomfort and tangents.`],
+    devilNote:`Open with the Christmas tree story in line one. One credential mention, tucked in the middle. Frame Zach as someone who has been in the wreckage, not someone who fixes it.`,
+    defaultStyle:'Intro Personalized',showPhrases:['messy and uncomfortable truths','shame and survival','addiction and the complicated aftermath'],
+    fu1:`Hi Paul,\n\nAs you consider collaborating with Zach, I want to share a missing piece from the story above.\n\nAfter Zach and his wife stopped drinking, they realized their teenage daughter, living under their roof, had shut them out completely, struggling with substances and unhealthy relationships.\n\nZach describes this as the moment they were "fired as parents." There was no quick repair. The miracle wasn't reconciliation; it was staying present without forcing an outcome.\n\nRather than offering answers, Zach can share a perspective on the parts of recovery that feel lonely, disorienting, and unfinished, so listeners can feel less alone in the places they're still struggling.\n\nTo get a feel for him as a guest, check out his episodes on top podcasts like Balancing Act, Hungry for Conversation, and Hello Someday.\n\nWould you like to connect with Zach?\n\nBest,\n[W]`,
+    fu2:`Hi Paul,\n\nI wanted to reach out one final time to see if you'd like to take this opportunity to connect with Zach.\n\nSince I haven't heard back from you, it suggests one of three things:\n\nYou're not currently looking for guests, so I'll give you some space.\nYou're still interested but just haven't had a chance to get back to me.\nYou've just discovered Breaking Bad for the first time and can't stop watching it.\n\nPlease let me know which one is true!\n\nBest,\n[W]`},
+  kat_psychedelic:{name:'The Psychedelic Podcast',host:'Paul Austin · Weekly',art:'🍄',fit:'strong',fitLabel:'Strong Fit',
+    socials:[{p:'Instagram',h:'@thirdwaveishere',f:'89.4K'},{p:'Twitter/X',h:'@thethirdwave',f:'31.2K'},{p:'YouTube',h:'Third Wave',f:'47.8K subs'},{p:'Website',h:'thethirdwave.co',f:null}],
+    downloads:{ok:true,figure:'Top 5% globally in alternative health',source:'Listen Notes ranking'},
+    guestAlert:true,guestAlertText:'Kat has previously appeared on this show — retarget with the 30-nights-alone angle',
+    personalConnection:{text:"Both Kat and Paul have publicly advocated for responsible, intentional psychedelic use over recreational approaches — verified through Third Wave's published mission statement.",link:'https://thethirdwave.co/about/',verified:true},
+    audience:{who:'Educated adults 25-45 interested in psychedelics for personal growth, therapy, or consciousness exploration.',needs:'Evidence-based, nuanced information about psychedelics that goes beyond hype or fear.',struggles:'Finding trustworthy facilitators. Navigating a rapidly changing legal and cultural landscape. Understanding integration.',guestType:'Guests with genuine depth — lineage holders, researchers, therapists, or practitioners with unusual experience. The audience quickly spots shallow expertise.'},
+    host_profile:`Paul Austin runs Third Wave, one of the largest psychedelic education platforms globally. His style is <strong>intellectually curious and systems-thinking driven</strong>. He values guests with genuine depth and is aware of colonization concerns.`,
+    topic_gap:`<strong>The specific angle of 30 consecutive nights of ayahuasca alone — what that teaches about stability vs. intensity — has not appeared on this show.</strong>`,
+    ep_match:{text:'Kat previously appeared — retarget with the stability vs. intensity angle not yet shared publicly',link:'',type:'match'},
+    diff:{same:`Paul's show has featured traditionally trained facilitators and lineage holders before. Kat fits that profile well.`,different:`The 30-nights-alone story and the death doula lens are angles Paul's audience has not encountered. Kat speaks about pushing the container to its absolute limit — and what that taught her about restraint, not intensity.`,verdict:'now',verdictText:'Pitch now — the new angle is genuinely differentiated from her previous appearance.'},
+    connection:`Paul's audience is debating the experience junkie trap. Kat's 30-nights-alone story combined with her death doula training is genuinely novel — most facilitators speak about ceremony from the outside.`,
+    devil:[`Kat has already appeared on this show. The retarget must lead clearly with what's new and what she hasn't shared publicly before.`,`Paul's audience includes many people pursuing intense experiences. Kat's stability over intensity message must be framed as wisdom, not restriction.`,`The 30-nights story must be framed as a lesson in restraint, not as glorifying excess.`],
+    devilNote:`Lead with something she hasn't talked about publicly before. Frame 30 nights as the source of her wisdom about when NOT to push. Let the death doula angle be the unexpected second layer.`,
+    defaultStyle:'Intro Personalized',showPhrases:['responsible and intentional psychedelic use','integration and the work that follows','the relationship between consciousness and healing'],
+    fu1:`Hi Paul,\n\nSince first reaching out, Kat wanted to share something she hasn't talked about publicly. The 30 consecutive nights alone wasn't just a ceremony experiment. It fundamentally changed how she holds space for others.\n\nThe relationship between consciousness and healing, she learned, isn't built through intensity. It's built through presence, over time, across hundreds of small moments of staying when everything in you wants to leave.\n\nShe'd love to bring that conversation to your audience — the part of the journey nobody talks about, the part after the peak, when the real work begins.\n\nWould you like to reconnect with Kat?\n\nBest,\n[W]`,
+    fu2:`Hi Paul,\n\nI wanted to reach out one final time to see if you'd like to reconnect with Kat.\n\nSince I haven't heard back from you, it suggests one of three things:\n\nYou're not currently looking for guests, so I'll give you some space.\nYou're still interested but just haven't had a chance to get back to me.\nYou've just started a plant diet and are observing digital silence.\n\nPlease let me know which one is true!\n\nBest,\n[W]`},
+  kat_death:{name:'Life, Death & The Space Between',host:'Dr. Amy Robbins · Weekly',art:'🕯',fit:'strong',fitLabel:'Strong Fit',
+    socials:[{p:'Instagram',h:'@dramyrobbins',f:'14.2K'},{p:'Facebook',h:'dramyrobbins',f:'6.8K'},{p:'Website',h:'dramyrobbins.com',f:null}],
+    downloads:{ok:false,note:'Downloads not publicly listed'},
+    guestAlert:true,guestAlertText:'Kat has previously appeared on this show — listed on her press page',
+    personalConnection:{text:"Both Dr. Amy and Kat have spoken openly about the transformative nature of sitting with death — Dr. Amy from a psychological lens, Kat from a ceremonial and end-of-life lens. Verified through public episode descriptions.",link:'https://dramyrobbins.com/podcast',verified:true},
+    audience:{who:'Spiritually curious adults 35-60 grappling with loss, mortality, or the question of what happens after death.',needs:'Permission to think about death openly, without fear. Frameworks for sitting with the unknown.',struggles:'A culture that avoids death entirely. Grief that has no language. The fear of their own dying.',guestType:'Guests who have a genuine, lived relationship with death — not philosophers or academics, but people who have been in the room.'},
+    host_profile:`Dr. Amy Robbins is a psychologist and spiritual teacher exploring death, grief, and consciousness. Her style is <strong>deeply contemplative and open-hearted</strong>. She values guests who have a genuine relationship with death — not just philosophical takes on it.`,
+    topic_gap:`<strong>The intersection of plant medicine ceremony and death doula work — using death awareness to hold safer psychedelic containers — has not been explored in depth on this show.</strong>`,
+    ep_match:{text:'Kat has previously appeared on this show — retarget with the ceremony and death doula intersection angle',link:'',type:'match'},
+    diff:{same:`Dr. Amy's show has featured guests who work at the intersection of consciousness and death. Kat fits that profile.`,different:`Most of Dr. Amy's guests approach death from grief or spiritual philosophy. Kat approaches it from inside the ceremony space — using actual death doula training to hold the threshold of ego dissolution. That is a genuinely different entry point.`,verdict:'now',verdictText:'Pitch now — the ceremony and death doula intersection is an untapped angle for this show.'},
+    connection:`Dr. Amy's audience is already death-aware and spiritually open. Kat's story of losing her father, training as a death doula, and discovering how death awareness transforms ceremony facilitation is the perfect fit.`,
+    devil:[`Kat has appeared on this show before. The retarget must bring a clearly new angle — not a repeat of her origin story.`,`Dr. Amy's audience may be cautious about plant medicine. Honor the mystery of both death work and plant medicine.`,`The death doula and ayahuasca combination must emerge from Kat's story — losing her father — not from a pitch angle.`],
+    devilNote:`Start with the loss of her father, not credentials. Let the connection between death doula work and ceremony safety emerge from that grief.`,
+    defaultStyle:'Fully Personalized',showPhrases:['the space between living and dying','what becomes possible when you stop running from death','the threshold most people never consciously cross'],
+    fu1:`Hi Dr. Amy,\n\nSomething Kat didn't share the first time: the moment she realized that her death doula training and her ceremony work were actually the same thing.\n\nBoth require sitting with someone at a threshold they can't cross alone. Both ask the facilitator to remain present without flinching, without rushing the process, without trying to make the experience more comfortable than it needs to be.\n\nShe'd love to bring that conversation to your audience — the specific, practical ways that learning to sit with actual death made her a better ceremony facilitator.\n\nWould you like to connect with Kat?\n\nBest,\n[W]`,
+    fu2:`Hi Dr. Amy,\n\nI wanted to reach out one final time to see if you'd like to take this opportunity to connect with Kat.\n\nSince I haven't heard back from you, it suggests one of three things:\n\nYou're not currently looking for guests, so I'll give you some space.\nYou're still interested but just haven't had a chance to get back to me.\nYou've entered a silent retreat and won't be back until spring.\n\nPlease let me know which one is true!\n\nBest,\n[W]`}
+};
+
+const ANGLES={
+  zach:[{id:'relational',label:'Relationships: Relational Recovery',positioning:`Zach is the only therapist certified in both RLT and the Gottman Method. He wants to share why fixing the "obvious problems" often doesn't lead to real change. In 2020 he had his last drink. Sobriety didn't improve his marriage — it made his wife's drinking worse, his teenage daughter shut them out, and exposed issues in their marriage. What healed their connection wasn't working harder; it was how Zach showed up — relational recovery. Key topics: stories we tell ourselves, parts-based lens, and the seven Cs of relational practices.`},
+    {id:'sobriety',label:'Sobriety: Relational Recovery',positioning:`Zach is a recovering alcoholic and the only therapist certified in both RLT and the Gottman Method. For two decades he numbed anger with alcohol. Even totally sober he destroyed an aluminum Christmas tree stand, left to buy a hammer, came back and kept going. On Nov 13 2020 he had his last drink. Instead of improvement he got raw anger. What changed things was emotional sobriety through relational recovery. Key topics: stories we tell ourselves, the seven Cs, healing what's under the alcoholism, one partner sober and the other still drinking.`},
+    {id:'swap',label:'Podcast Swap',positioning:`Zach hosts Marriage Therapy Radio (4M+ downloads) — authentic conversations with couples about love, growth, and navigating life together. We can offer swaps to podcast hosts if they have a partner who can join them on his show. The show is NOT therapy — it's about helping couples feel inspired and less alone.`}],
+  kat:[{id:'safety',label:'Plant Medicine & Safety',positioning:`Kat is a traditionally trained Ayahuasquera and Huachumera with 20+ years and 1,500+ ceremonies. She wants to share what happens when you drink ayahuasca for 30 consecutive nights alone — lessons about stability vs. intensity. Key topics: why chasing peak experiences can be destabilizing, when to microdose vs ceremonial vs divine doses, plant dietas and building relationships with plant consciousness.`},
+    {id:'mentalhealth',label:'Plant Medicine & Mental Health',positioning:`Kat's personal story of transformation: from bulimia, bipolar disorder, and functioning alcoholism working at Disney, to becoming a plant medicine facilitator. Key topics: how plant medicine can support trauma, addiction, depression and body dysmorphia without re-traumatizing the nervous system, integration coaching, healing isn't a quick fix.`},
+    {id:'death',label:'Death Doula',positioning:`Kat is a certified Death Doula who bridges traditional Amazonian lineage healing with end-of-life transitions. She lost her father — this opened her path to death doula work. Key topics: what sitting with dying people teaches about psychedelic surrender, why fear of ego death mirrors fear of actual death, how death doula training creates safer containers for trauma survivors.`}]
+};
+
+const CLIENTS={
+  zach:{name:'Zach Brittle',emoji:'🎙',badge:'Zach Brittle · Marriage Therapy Radio',angles:ANGLES.zach,
+    demos:[{label:'The Life Shift Podcast (Sobriety)',key:'zach_life'},{label:'Mental Illness Happy Hour (Sobriety)',key:'zach_mental'}],
+    brain:`<div class="ccm"><div class="ccm-name">Zach Brittle</div><div class="ccm-role">LMHC · Gottman Therapist · RLT Therapist · Host, Marriage Therapy Radio</div><div class="ccm-goal">▸ April 2027 Book Launch — RLT positioning</div></div>
+    <div class="stats-row"><div class="stat-box"><span class="stat-num">16</span><div class="stat-label">Booked</div></div><div class="stat-box"><span class="stat-num">4M+</span><div class="stat-label">Downloads</div></div></div>
+    <div class="bs"><div class="bst">Core Stories</div>
+    <div class="bi"><strong>Christmas tree:</strong> Stone-cold sober, destroyed an aluminum tree stand. Left, bought a hammer, came back and kept going.</div>
+    <div class="bi"><strong>Nov 13 2020:</strong> Last drink. Expected life to improve — got raw anger and a destabilized marriage.</div>
+    <div class="bi"><strong>Rebecca:</strong> As Zach recovered, wife's drinking worsened. She joined him 8 months later.</div>
+    <div class="bi"><strong>"Fired" as parents:</strong> 15yr old daughter shut them out completely during recovery.</div>
+    <div class="bi"><strong>The miracle:</strong> "It won't look the way you think it will." Staying present, not fixing.</div></div>
+    <div class="bs"><div class="bst">Unconventional Takes</div>
+    <div class="bi">"Stop working on your marriage" — do personal work, learn to play</div>
+    <div class="bi">Challenges myths: "don't go to bed angry", "communication is the key"</div></div>
+    <div class="bs"><div class="bst">Social Proof</div>
+    <div class="bi">NYT · WaPo · Vanity Fair · Men's Health · HuffPost</div>
+    <div class="bi">Top 0.01%: Couple Things · Top 0.5%: Balancing Act, Hello Someday</div></div>
+    <div class="bs"><div class="bst">Avoid</div>
+    <div class="av">Shows with strong religious framing</div>
+    <div class="av">Trump supporters / right-wing hosts</div></div>`},
+  kat:{name:'Kat Courtney',emoji:'🌿',badge:'Kat Courtney · Plant Medicine People',angles:ANGLES.kat,
+    demos:[{label:'The Psychedelic Podcast (Plant Medicine)',key:'kat_psychedelic'},{label:'Life, Death & The Space Between (Death Doula)',key:'kat_death'}],
+    brain:`<div class="ccm"><div class="ccm-name">Kat Courtney</div><div class="ccm-role">Ayahuasquera · Huachumera · Death Doula · Founder, Plant Medicine People · Co-founder, Bassé</div><div class="ccm-goal">▸ Retreat awareness · Drive applicants</div></div>
+    <div class="stats-row"><div class="stat-box"><span class="stat-num">13</span><div class="stat-label">Booked</div></div><div class="stat-box"><span class="stat-num">1500+</span><div class="stat-label">Ceremonies</div></div></div>
+    <div class="bs"><div class="bst">Core Stories</div>
+    <div class="bi"><strong>Origin:</strong> 20s — bulimia, bipolar disorder, functioning alcoholism at Disney</div>
+    <div class="bi"><strong>First ceremony:</strong> Partner invited her to Peruvian jungle — said yes without knowing anything</div>
+    <div class="bi"><strong>30 nights alone:</strong> Drank ayahuasca 30 consecutive nights alone — stability vs. intensity</div>
+    <div class="bi"><strong>Death Doula:</strong> Lost her father — led to death doula training, bridges afterlife and plant medicine</div></div>
+    <div class="bs"><div class="bst">Avoid</div>
+    <div class="av">Biohacking / shallow psychedelic hype framing</div>
+    <div class="av">Colonizing or disrespectful indigenous narratives</div>
+    <div class="av">Misogynistic or homophobic spaces</div></div>`}
+};
+
+function confirmName(){const n=document.getElementById('writerName').value.trim();if(!n)return;writerName=n;document.getElementById('nameScreen').style.display='none';document.getElementById('clientScreen').style.display='flex';document.getElementById('clientWelcome').textContent=`Welcome, ${n}. Who are you pitching today?`;}
+function confirmClient(){const val=document.getElementById('clientDropdown').value;if(!val)return;selectClient(val);}
+function selectClient(key){
+  activeClient=key;const c=CLIENTS[key];activeAngle=c.angles[0].id;
+  document.getElementById('clientScreen').style.display='none';document.getElementById('toolScreen').style.display='flex';
+  document.getElementById('clientBadge').textContent=c.badge;
+  document.getElementById('angleSelector').innerHTML=c.angles.map((a,i)=>`<button class="angle-btn ${i===0?'active':''}" onclick="setAngle(this,'${a.id}')">${a.label}</button>`).join('');
+  document.getElementById('brainPanel').innerHTML=`<div class="panel-label">Client Brain</div>${c.brain}`;
+  updateAngleBox();
+  document.getElementById('emptyIcon').textContent=c.emoji;
+  document.getElementById('demoLinks').innerHTML=c.demos.map(d=>`<div class="demo-link" onclick="loadDemo('${d.key}')">↗ ${d.label}</div>`).join('');
+  document.getElementById('emptyState').style.display='flex';
+  document.getElementById('urlInput').value='';
+  document.querySelectorAll('.rcard').forEach(el=>el.remove());
+  document.querySelectorAll('.status-bar').forEach(el=>el.remove());
+}
+function updateAngleBox(){
+  const c=CLIENTS[activeClient];const angle=c.angles.find(a=>a.id===activeAngle);if(!angle)return;
+  const old=document.getElementById('angleBox');if(old)old.remove();
+  const box=document.createElement('div');box.className='angle-box';box.id='angleBox';
+  box.innerHTML=`<div class="angle-box-title">Active Angle Positioning</div><div class="angle-box-text">${angle.positioning}</div>`;
+  document.getElementById('brainPanel').appendChild(box);
+}
+function goBack(){document.getElementById('toolScreen').style.display='none';document.getElementById('clientScreen').style.display='flex';activeClient=null;}
+function setAngle(btn,id){activeAngle=id;document.querySelectorAll('.angle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');updateAngleBox();}
+function startResearch(){const url=document.getElementById('urlInput').value.trim();if(!url)return;simulateResearch(activeClient==='zach'?'zach_life':'kat_psychedelic');}
+function loadDemo(key){simulateResearch(key);}
+function simulateResearch(key){
+  const btn=document.getElementById('researchBtn');btn.disabled=true;btn.textContent='Researching…';
+  document.getElementById('emptyState').style.display='none';
+  document.querySelectorAll('.status-bar').forEach(el=>el.remove());
+  const status=document.createElement('div');status.className='status-bar';
+  status.innerHTML=`<div class="pulse"></div><span id="statusText">Fetching show data from iTunes API…</span>`;
+  document.getElementById('cardsArea').prepend(status);
+  const steps=['Fetching show data from iTunes API…','Identifying host and scanning episode history…','Pulling follower counts and download data…','Pulling phrases from show description…','Building audience profile…','Checking if host appeared on client show…','Looking for verified personal connections…','Scanning for previous episode coverage…','Running differentiation analysis…','Running devil\'s advocate review…',`Generating pitch in ${writerName}'s voice…`];
+  let i=0;const iv=setInterval(()=>{if(i<steps.length){document.getElementById('statusText').textContent=steps[i++];}else{clearInterval(iv);status.remove();btn.disabled=false;btn.textContent='Research →';renderCard(key);}},420);
+}
+function getPitch(styleKey,cardKey){
+  const d=PD[cardKey];if(!d)return'Pitch data not available for this demo.';
+  const style=PITCH_STYLES[styleKey];if(!style)return'Style not found.';
+  try{return style.get(d,writerName);}catch(e){return`Could not generate variant: ${e.message}`;}
+}
+function renderCard(key){
+  const d=CARDS[key];if(!d)return;
+  const id='card_'+Date.now();
+  const socialHtml=d.socials.map(s=>s.f?`<div class="social-chip"><span class="social-chip-platform">${s.p}</span><span class="social-chip-followers">${s.f}</span></div>`:`<div class="social-chip"><span class="social-chip-platform">${s.p}</span><span class="social-chip-na">${s.h}</span></div>`).join('');
+  const dlHtml=d.downloads.ok?`<div class="downloads-badge">🎧 ${d.downloads.figure} <span style="color:#777;margin-left:4px;">(${d.downloads.source})</span></div>`:`<div class="downloads-badge" style="background:var(--surface2);border-color:var(--border2);color:#777;">🎧 ${d.downloads.note}</div>`;
+  const guestBanner=d.guestAlert?`<div class="guest-banner">⭐ ${d.guestAlertText}</div>`:'';
+  const connBanner=d.personalConnection&&d.personalConnection.verified?`<div class="connection-banner">🔗 Verified personal connection: ${d.personalConnection.text} <a href="${d.personalConnection.link}" target="_blank" style="color:#6aacf0;margin-left:4px;">Verify →</a></div>`:'';
+  const epTag=d.ep_match.link?`<a class="ep-tag" href="${d.ep_match.link}" target="_blank">🔗 ${d.ep_match.text}</a>`:`<div class="ep-tag">${d.ep_match.type==='gap'?'⚡':'✅'} ${d.ep_match.text}</div>`;
+  const verdictClass={now:'verdict-now',wait:'verdict-wait',angle:'verdict-angle'}[d.diff.verdict];
+  const devilItems=d.devil.map(item=>`<div class="devil-item">${item}</div>`).join('');
+  const showPhrasesHtml=d.showPhrases?`<div class="sec"><div class="sl">💬 Phrases pulled from show description</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${d.showPhrases.map(p=>`<span style="background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:2px 8px;font-size:9px;color:#a0b4ff;">"${p}"</span>`).join('')}</div></div>`:'';
+  const defStyle=d.defaultStyle||'Intro Personalized';
+  const defPitch=getPitch(defStyle,key);
+  const styleTabsHtml=Object.keys(PITCH_STYLES).map(s=>`<button class="style-tab${s===defStyle?' active':''}" onclick="selectStyle('${id}','${key}','${s}')" title="${PITCH_STYLES[s].desc}">${s}</button>`).join('');
+
+  const el=document.createElement('div');el.className='rcard';el.id=id;
+  el.innerHTML=`
+    ${guestBanner}${connBanner}
+    <div class="rcard-top">
+      <div class="show-art">${d.art}</div>
+      <div class="show-meta">
+        <div class="show-name">${d.name}</div>
+        <div class="show-host">${d.host}</div>
+        <div class="social-row">${socialHtml}</div>
+        ${dlHtml}
+      </div>
+      <div class="fit-badge fit-${d.fit}">✦ ${d.fitLabel}</div>
+    </div>
+    ${showPhrasesHtml}
+    <div class="sec"><div class="sl">🎙 Host Profile</div><div class="st">${d.host_profile}</div></div>
+    <div class="sec">
+      <div class="sl">👥 Audience</div>
+      <div class="audience-grid">
+        <div class="audience-box"><div class="audience-box-label">Who listens</div><div class="audience-box-text">${d.audience.who}</div></div>
+        <div class="audience-box"><div class="audience-box-label">What they need</div><div class="audience-box-text">${d.audience.needs}</div></div>
+        <div class="audience-box"><div class="audience-box-label">What they struggle with</div><div class="audience-box-text">${d.audience.struggles}</div></div>
+        <div class="audience-box"><div class="audience-box-label">Guest type that works</div><div class="audience-box-text">${d.audience.guestType}</div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sl">🔍 Topic Coverage and Differentiation</div>
+      <div class="st">${d.topic_gap}<br>${epTag}</div>
+      <div class="diff-row">
+        <div class="diff-box diff-same"><div class="diff-box-label">Same as before</div><div class="diff-box-text">${d.diff.same}</div></div>
+        <div class="diff-box diff-diff"><div class="diff-box-label">What's different</div><div class="diff-box-text">${d.diff.different}</div></div>
+      </div>
+      <div class="diff-verdict ${verdictClass}">${d.diff.verdictText}</div>
+    </div>
+    <div class="sec"><div class="sl">⚡ Why This Connection Works</div><div class="st">${d.connection}</div></div>
+    <div class="devil-section">
+      <div class="devil-label">⚠ Devil's Advocate — Read before writing</div>
+      ${devilItems}
+      <div class="devil-note">How to use this: ${d.devilNote}</div>
+    </div>
+    <div class="pitch-section">
+      <div class="style-selector-label">Pitch Style — <span style="color:#888;font-size:8px;">Click another style to compare side by side before choosing</span></div>
+      <div class="style-tabs">${styleTabsHtml}</div>
+      <div class="style-comparison" id="comp_${id}"></div>
+      <div class="sl" style="margin-bottom:4px">✍ Suggested Pitch — <span class="psb" id="badge_${id}">${defStyle}</span></div>
+      <div class="pitch-edit-note">Click into the pitch to edit directly.</div>
+      <div class="pitch-body" id="pb_${id}" contenteditable="true">${defPitch}</div>
+      <div class="copy-row">
+        <button class="btn-copy" onclick="copyPitch('${id}')">⎘ Copy Pitch</button>
+        <button class="btn-approve" onclick="approvePitch('${id}','${key}')">✓ Approve and Build Sequence</button>
+      </div>
+      <div id="seq_${id}"></div>
+    </div>`;
+  document.getElementById('cardsArea').appendChild(el);
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function selectStyle(cardId,cardKey,styleName){
+  const tabs=document.getElementById(cardId).querySelectorAll('.style-tab');
+  const currentStyle=document.getElementById(`badge_${cardId}`).textContent;
+  tabs.forEach(t=>t.classList.toggle('active',t.textContent===styleName));
+  if(styleName===currentStyle){document.getElementById(`comp_${cardId}`).classList.remove('visible');document.getElementById(`comp_${cardId}`).innerHTML='';return;}
+  const cur=getPitch(currentStyle,cardKey);const nw=getPitch(styleName,cardKey);
+  const comp=document.getElementById(`comp_${cardId}`);comp.classList.add('visible');
+  comp.innerHTML=`
+    <div class="style-col">
+      <div class="style-col-header"><span class="style-col-name">${currentStyle}</span><span class="style-col-current">Current</span></div>
+      <div class="style-col-text">${cur}</div>
+    </div>
+    <div class="style-col">
+      <div class="style-col-header"><span class="style-col-name">${styleName}</span></div>
+      <div class="style-col-text">${nw}</div>
+      <button class="use-style-btn" onclick="useStyle('${cardId}','${cardKey}','${styleName}')">Use this style</button>
+    </div>`;
+}
+function useStyle(cardId,cardKey,styleName){
+  const nw=getPitch(styleName,cardKey);
+  document.getElementById(`pb_${cardId}`).innerHTML=nw;
+  document.getElementById(`badge_${cardId}`).textContent=styleName;
+  document.getElementById(`comp_${cardId}`).classList.remove('visible');
+  document.getElementById(`comp_${cardId}`).innerHTML='';
+  document.getElementById(cardId).querySelectorAll('.style-tab').forEach(t=>t.classList.toggle('active',t.textContent===styleName));
+}
+function copyPitch(id){
+  const el=document.getElementById(`pb_${id}`);if(!el)return;
+  navigator.clipboard.writeText(el.innerText).catch(()=>{});
+  const btn=document.getElementById(id).querySelector('.btn-copy');if(!btn)return;
+  const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,2000);
+}
+function approvePitch(id,key){
+  const d=CARDS[key];if(!d)return;
+  const pitch=document.getElementById(`pb_${id}`).innerText;
+  const fu1=d.fu1.replace(/\[W\]/g,writerName);
+  const fu2=d.fu2.replace(/\[W\]/g,writerName);
+  const seq=document.getElementById(`seq_${id}`);
+  seq.innerHTML=`<div class="sequence-section">
+    <div class="seq-label">Full Pitch Sequence — click to edit any section</div>
+    <div class="seq-body" id="sb_${id}" contenteditable="true">${pitch}\n\nFollow-up 1\n\n${fu1}\n\nFollow-up 2\n\n${fu2}</div>
+    <button class="btn-copy-seq" onclick="copySeq('${id}')">⎘ Copy Full Sequence</button>
+  </div>`;
+  seq.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function copySeq(id){
+  const el=document.getElementById(`sb_${id}`);if(!el)return;
+  navigator.clipboard.writeText(el.innerText).catch(()=>{});
+  const btn=document.getElementById(`seq_${id}`).querySelector('.btn-copy-seq');if(!btn)return;
+  const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,2000);
+}
+</script>
+</body>
+</html>
