@@ -7,305 +7,439 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
 :root {
-  --bg:#2d2d2d;--surface:#232323;--surface2:#2a2a2a;--surface3:#313131;
-  --border:#3a3a3a;--border2:#555;--text:#f0f0f0;--text2:#c8c8c8;--muted:#999;
-  --accent:#7592f2;--accent-dim:#151b35;--accent-border:#2a3560;
-  --danger:#e05555;--warn:#d4a04a;--success:#5a9e6f;
+  --bg: #ffffff;
+  --text: #111111;
+  --surface: #f7f7f7;
+  --surface2: #efefef;
+  --surface3: #e6e6e6;
+  --border: #e0e0e0;
+  --border2: #cccccc;
+  --accent: #7592f2;
+  --accent-dim: rgba(117,146,242,0.08);
+  --accent-border: rgba(117,146,242,0.35);
+  --warn: #b87800;
+  --danger: #c03030;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:12px;}
+body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:14px;}
+
+/* ── NAME SCREEN ── */
 #nameScreen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;}
-.chia-logo{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:#fff;letter-spacing:-0.03em;}
+.chia-logo{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#111;letter-spacing:-0.03em;}
 .chia-logo span{color:var(--accent);}
-.chia-tag{font-size:10px;color:#aaa;letter-spacing:0.2em;text-transform:uppercase;}
-.name-box{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:320px;}
-.name-label{font-size:11px;color:var(--text2);}
-.name-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:14px;color:#fff;outline:none;text-align:center;transition:border-color 0.2s;}
+.chia-tag{font-size:12px;color:#888;letter-spacing:0.2em;text-transform:uppercase;}
+.name-wrap{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;}
+.name-label{font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#888;}
+.name-input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:14px;color:#111;outline:none;transition:border-color 0.2s;}
 .name-input:focus{border-color:var(--accent);}
-.name-input::placeholder{color:#777;}
-.main-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:10px 28px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:opacity 0.2s;width:100%;}
+.name-input::placeholder{color:#aaa;}
+.main-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:11px 28px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;width:100%;}
 .main-btn:hover{opacity:0.85;}
+
+/* ── CLIENT SCREEN ── */
 #clientScreen{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;}
+.client-welcome{font-size:15px;color:#555;}
 .client-select-wrap{display:flex;flex-direction:column;gap:8px;width:100%;max-width:300px;}
-.client-select-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;}
-.client-dropdown{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;outline:none;cursor:pointer;appearance:none;transition:border-color 0.2s;}
+.client-select-label{font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#888;}
+.client-dropdown{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:14px;color:#111;outline:none;cursor:pointer;appearance:none;transition:border-color 0.2s;}
 .client-dropdown:focus{border-color:var(--accent);}
-.client-dropdown option{background:var(--surface2);color:#fff;}
+.client-dropdown option{background:#fff;color:#111;}
+
+/* ── TOOL SCREEN ── */
 #toolScreen{flex:1;display:none;flex-direction:column;}
 .topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:100;flex-wrap:wrap;}
-.tlogo{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;flex-shrink:0;}
+.tlogo{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#111;flex-shrink:0;}
 .tlogo span{color:var(--accent);}
-.back-btn{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:5px 11px;font-size:10px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;transition:all 0.15s;}
-.back-btn:hover{color:#fff;border-color:#888;}
-.client-badge{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:5px;padding:4px 10px;font-size:10px;color:#a0b4ff;}
-.angle-selector{display:flex;gap:6px;flex-wrap:wrap;}
-.angle-btn{background:var(--surface3);border:1px solid var(--border2);border-radius:4px;padding:5px 11px;font-size:10px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;line-height:1.4;transition:all 0.15s;}
-.angle-btn:hover{color:#fff;border-color:#888;background:#3a3a3a;}
-.angle-btn.active{background:var(--accent-dim);border-color:var(--accent);color:#c0ccff;font-weight:600;}
+.back-btn{background:#fff;border:1px solid var(--border2);border-radius:4px;padding:5px 12px;font-size:12px;color:#555;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;transition:all 0.15s;}
+.back-btn:hover{color:#111;border-color:#888;}
+.client-badge{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:5px;padding:4px 10px;font-size:12px;color:#5572c8;font-weight:600;}
+.angle-selector{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.angle-label{font-size:11px;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-right:2px;}
+.angle-btn{background:#fff;border:1px solid var(--border2);border-radius:4px;padding:5px 12px;font-size:12px;color:#444;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;line-height:1.4;transition:all 0.15s;}
+.angle-btn:hover{color:#111;border-color:#888;background:var(--surface2);}
+.angle-btn.active{background:var(--accent-dim);border-color:var(--accent);color:#3a52c0;font-weight:600;}
 .input-area{display:flex;gap:7px;margin-left:auto;flex-shrink:0;}
-.url-input{background:#3a3a3a;border:1px solid #666;border-radius:5px;padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#fff;width:220px;outline:none;transition:border-color 0.2s;}
+.url-input{background:#fff;border:1px solid var(--border2);border-radius:5px;padding:7px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#111;width:240px;outline:none;transition:border-color 0.2s;}
 .url-input:focus{border-color:var(--accent);}
 .url-input::placeholder{color:#aaa;}
-.research-btn{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:7px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;letter-spacing:0.04em;}
+.research-btn{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:7px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;letter-spacing:0.04em;}
 .research-btn:hover{opacity:0.85;}
-.research-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.research-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* ── LAYOUT ── */
 .main{display:flex;flex:1;overflow:hidden;}
-.brain-panel{width:215px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;padding:14px;}
-.panel-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#888;margin-bottom:10px;}
-.ccm{background:var(--surface2);border:1px solid var(--border2);border-radius:7px;padding:11px;margin-bottom:11px;}
-.ccm-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
-.ccm-role{font-size:9px;color:#999;line-height:1.5;margin-bottom:5px;}
-.ccm-goal{font-size:9px;color:var(--accent);}
-.stats-row{display:flex;gap:5px;margin-bottom:11px;}
-.stat-box{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:7px;text-align:center;}
-.stat-num{font-family:'Playfair Display',serif;font-size:16px;color:var(--accent);display:block;line-height:1;}
-.stat-label{font-size:8px;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
-.bs{margin-bottom:12px;}
-.bst{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
-.bi{font-size:9px;color:#aaa;line-height:1.6;padding:3px 0;border-bottom:1px solid var(--border);}
-.bi:last-child{border-bottom:none;}
-.bi strong{color:#ccc;}
-.av{font-size:9px;color:var(--danger);padding:3px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.5;}
-.av::before{content:'✕';font-size:8px;flex-shrink:0;margin-top:2px;}
-.angle-box{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:6px;padding:10px 11px;margin-bottom:11px;}
-.angle-box-title{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#a0b4ff;margin-bottom:5px;}
-.angle-box-text{font-size:9px;color:#c0c8e8;line-height:1.65;}
+
+/* ── BRAIN PANEL ── */
+.brain-panel{width:230px;border-right:1px solid var(--border);background:var(--surface);overflow-y:auto;flex-shrink:0;padding:14px;}
+.panel-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#aaa;margin-bottom:10px;}
+.ccm{background:#fff;border:1px solid var(--border);border-radius:7px;padding:11px;margin-bottom:10px;}
+.ccm-name{font-size:15px;font-weight:700;color:#111;margin-bottom:3px;}
+.ccm-role{font-size:11px;color:#777;line-height:1.55;margin-bottom:5px;}
+.ccm-goal{font-size:11px;color:var(--accent);font-weight:600;}
+.stats-row{display:flex;gap:6px;margin-bottom:10px;}
+.stat-box{flex:1;background:#fff;border:1px solid var(--border);border-radius:5px;padding:8px 6px;text-align:center;}
+.stat-num{font-size:17px;font-weight:700;color:#111;display:block;}
+.stat-label{font-size:9px;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;}
+.bs{background:#fff;border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px;}
+.bst{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:7px;}
+.bi{font-size:11px;color:#444;line-height:1.65;padding:2px 0;}
+.bi strong{color:#111;}
+.av{font-size:11px;color:var(--danger);line-height:1.65;padding:2px 0;}
+.av::before{content:'✕  ';}
+.angle-box{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:6px;padding:11px;margin-bottom:10px;}
+.angle-box-title{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#7592f2;margin-bottom:6px;font-weight:700;}
+.angle-box-text{font-size:11px;color:#333;line-height:1.7;}
+
+/* ── CARDS AREA ── */
 .cards-area{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px;background:var(--bg);}
-.status-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;font-size:10px;color:#aaa;}
+.status-bar{display:flex;align-items:center;gap:9px;padding:10px 15px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:#888;}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
-.rcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeUp 0.4s ease both;}
+.rcard{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;animation:fadeUp 0.4s ease both;box-shadow:0 2px 12px rgba(0,0,0,0.05);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.guest-banner{background:#1a1f08;border-bottom:1px solid #2a3510;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:9px;color:#b8d44a;}
-.connection-banner{background:#0f1a2e;border-bottom:1px solid #1a3050;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:9px;color:#6aacf0;}
+
+.guest-banner{background:#f4faeb;border-bottom:1px solid #c8e89a;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3d7018;}
+.connection-banner{background:#eef2ff;border-bottom:1px solid #c0ccf8;padding:7px 15px;display:flex;align-items:center;gap:8px;font-size:11px;color:#3050b8;}
+
 .rcard-top{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border);}
-.show-art{width:52px;height:52px;border-radius:7px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.show-art{width:52px;height:52px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .show-meta{flex:1;min-width:0;}
-.show-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;line-height:1.3;}
-.show-host{font-size:9px;color:#999;margin-bottom:8px;}
-.social-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
-.social-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;font-size:9px;display:flex;flex-direction:column;gap:1px;}
-.social-chip-platform{color:#888;font-size:8px;}
-.social-chip-followers{color:#fff;font-weight:600;}
-.social-chip-na{color:#888;font-style:italic;}
-.downloads-badge{display:inline-flex;align-items:center;gap:5px;background:#1a1f0a;border:1px solid #2a3a10;border-radius:4px;padding:4px 9px;font-size:9px;color:#8fc44a;}
-.fit-badge{padding:4px 10px;border-radius:20px;font-size:9px;font-weight:600;white-space:nowrap;flex-shrink:0;}
-.fit-strong{background:#0d1a0f;border:1px solid #2a4a2e;color:#7dcf8a;}
-.fit-possible{background:#1a1500;border:1px solid #4a3a10;color:var(--warn);}
-.fit-no{background:#1a0808;border:1px solid #4a1010;color:var(--danger);}
-.sec{padding:11px 15px;border-bottom:1px solid var(--border);}
-.sl{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#a0b4ff;margin-bottom:6px;}
-.st{font-size:10.5px;line-height:1.75;color:#c8c8c8;}
-.st strong{color:#fff;}
-.ep-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:4px;padding:4px 9px;font-size:9px;color:#a0b4ff;margin-top:7px;cursor:pointer;text-decoration:none;}
-.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
-.audience-box{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:9px 10px;}
-.audience-box-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#a0b4ff;margin-bottom:5px;}
-.audience-box-text{font-size:9.5px;color:#c0c0c0;line-height:1.65;}
+.show-name{font-size:15px;font-weight:700;color:#111;margin-bottom:2px;}
+.show-host{font-size:12px;color:#777;margin-bottom:6px;}
+.social-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;}
+.social-chip{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:2px 7px;}
+.social-chip-platform{font-size:10px;color:#999;letter-spacing:0.06em;}
+.social-chip-followers{font-size:11px;color:#111;font-weight:600;}
+.social-chip-na{font-size:11px;color:#999;}
+.downloads-badge{display:inline-flex;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:3px 8px;font-size:11px;color:#5572c8;}
+.fit-badge{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0;}
+.fit-strong{background:#edfaf0;border:1px solid #90d8a0;color:#1a6a30;}
+.fit-possible{background:#fdf8e8;border:1px solid #d8c060;color:#8a6000;}
+.fit-no{background:#fff0f0;border:1px solid #e0a0a0;color:#b02020;}
+
+.sec{padding:12px 15px;border-bottom:1px solid var(--border);}
+.sl{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;font-weight:600;}
+.st{font-size:13px;line-height:1.75;color:#333;}
+.st strong{color:#111;}
+.ep-tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:4px;padding:4px 10px;font-size:11px;color:#5572c8;margin-top:8px;}
+
+.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px;}
+.audience-box{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:9px 10px;}
+.audience-box-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;font-weight:600;}
+.audience-box-text{font-size:12px;color:#444;line-height:1.65;}
+
 .diff-row{display:flex;gap:8px;margin-top:10px;}
-.diff-box{flex:1;border-radius:5px;padding:8px 10px;}
-.diff-same{background:#101a10;border:1px solid #1a3a1a;}
-.diff-diff{background:#0d1520;border:1px solid #1a2a40;}
-.diff-box-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;}
-.diff-same .diff-box-label{color:#6db87a;}
-.diff-diff .diff-box-label{color:#6a9aee;}
-.diff-box-text{font-size:9.5px;line-height:1.6;color:#c0c0c0;}
-.diff-verdict{font-size:9px;padding:6px 10px;border-radius:4px;margin-top:6px;}
-.verdict-now{background:#0d1a0f;border:1px solid #2a4a2e;color:#7dcf8a;}
-.verdict-wait{background:#1a1500;border:1px solid #4a3a10;color:var(--warn);}
-.verdict-angle{background:var(--accent-dim);border:1px solid var(--accent-border);color:#a0b4ff;}
-.devil-section{background:#1e1010;border-bottom:1px solid #3a1515;padding:11px 15px;}
-.devil-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#e07070;margin-bottom:6px;}
-.devil-item{font-size:10px;color:#c08080;line-height:1.7;padding:3px 0;display:flex;align-items:flex-start;gap:7px;}
-.devil-item::before{content:'⚠';font-size:9px;flex-shrink:0;margin-top:2px;}
-.devil-note{font-size:9px;color:#888;margin-top:6px;font-style:italic;line-height:1.5;border-top:1px solid #3a1515;padding-top:6px;}
-.pitch-section{background:var(--surface2);padding:13px 15px;}
-.psb{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:2px 8px;font-size:9px;color:#a0b4ff;}
-.style-selector-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px;}
-.style-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
-.style-tab{background:#3a3a3a;border:1px solid #666;border-radius:4px;padding:5px 10px;font-size:9px;color:#ddd;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:500;transition:all 0.15s;}
-.style-tab:hover{color:#fff;border-color:#999;background:#444;}
-.style-tab.active{background:var(--accent-dim);border-color:var(--accent);color:#c0ccff;font-weight:700;}
-.style-comparison{display:none;gap:10px;margin-bottom:12px;}
-.style-comparison.visible{display:flex;}
-.style-col{flex:1;background:#3a3a3a;border:1px solid #666;border-radius:6px;padding:10px;display:flex;flex-direction:column;gap:8px;}
-.style-col-header{display:flex;align-items:center;justify-content:space-between;}
-.style-col-name{font-size:9px;color:#a0b4ff;letter-spacing:0.08em;font-weight:600;}
-.style-col-current{font-size:8px;color:#aaa;background:#2a2a2a;border:1px solid #555;border-radius:3px;padding:1px 6px;}
-.style-col-text{font-size:9.5px;line-height:1.75;color:#d0d0d0;white-space:pre-wrap;max-height:180px;overflow-y:auto;}
-.use-style-btn{background:#fff;color:#111;border:none;border-radius:5px;padding:7px 14px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;cursor:pointer;transition:opacity 0.2s;align-self:flex-start;}
-.use-style-btn:hover{opacity:0.85;}
-.pitch-edit-note{font-size:8px;color:#888;margin-bottom:6px;font-style:italic;}
-.pitch-body{font-size:10.5px;line-height:1.85;color:#d0d0d0;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:4px;padding:6px;transition:border-color 0.2s;min-height:60px;}
-.pitch-body:focus{border-color:#666;background:#333;}
-.pitch-body a{color:#7aacf0;text-decoration:underline;}
-.copy-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
-.btn-copy{background:#fff;color:#111;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
-.btn-copy:hover{opacity:0.85;}
-.btn-approve{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.diff-box{flex:1;border-radius:5px;padding:9px 11px;}
+.diff-same{background:var(--surface);border:1px solid var(--border);}
+.diff-diff{background:#eef2ff;border:1px solid #c0ccf8;}
+.diff-box-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;font-weight:600;}
+.diff-box-text{font-size:12px;color:#333;line-height:1.6;}
+
+.diff-verdict{border-radius:5px;padding:7px 11px;font-size:12px;font-weight:600;margin-top:9px;display:inline-flex;}
+.verdict-now{background:#edfaf0;border:1px solid #90d8a0;color:#1a6a30;}
+.verdict-wait{background:#fdf8e8;border:1px solid #d8c060;color:#8a6000;}
+.verdict-angle{background:var(--accent-dim);border:1px solid var(--accent-border);color:#5572c8;}
+
+.devil-section{background:#fff8f8;border-bottom:1px solid #f0d5d5;padding:12px 15px;}
+.devil-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#b83030;margin-bottom:7px;font-weight:600;}
+.devil-item{font-size:13px;color:#903030;line-height:1.7;padding:3px 0;display:flex;align-items:flex-start;gap:7px;}
+.devil-item::before{content:'⚠';font-size:11px;flex-shrink:0;margin-top:2px;color:#c04040;}
+.devil-note{font-size:12px;color:#999;margin-top:7px;font-style:italic;line-height:1.55;border-top:1px solid #f0d5d5;padding-top:7px;}
+
+.pitch-section{background:var(--surface);padding:14px 15px;}
+.psb{background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:2px 8px;font-size:11px;color:#5572c8;}
+.pitch-edit-note{font-size:11px;color:#aaa;margin-bottom:7px;font-style:italic;}
+.pitch-body{font-size:13px;line-height:1.85;color:#222;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:5px;padding:8px;transition:border-color 0.2s;min-height:60px;}
+.pitch-body:focus{border-color:var(--border2);background:#fff;}
+.pitch-body .p{color:#5572c8;font-weight:500;}
+.pitch-body a{color:#5572c8;text-decoration:underline;}
+
+.copy-row{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;align-items:center;}
+.btn-copy{background:#111;color:#fff;border:none;border-radius:5px;padding:9px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
+.btn-copy:hover{opacity:0.75;}
+.btn-approve{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:9px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;}
 .btn-approve:hover{opacity:0.85;}
-.sequence-section{background:#0d1a0f;border:1px solid #1a3a1a;border-radius:6px;padding:14px 15px;margin-top:12px;}
-.seq-label{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:#7dcf8a;margin-bottom:10px;}
-.seq-body{font-size:10.5px;line-height:1.85;color:#d0d0d0;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:4px;padding:4px;}
-.seq-body:focus{border-color:#1a3a1a;}
-.btn-copy-seq{background:#fff;color:#111;border:none;border-radius:5px;padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-top:10px;}
-.btn-copy-seq:hover{opacity:0.85;}
-.error-card{background:#1e1010;border:1px solid #4a1515;border-radius:8px;padding:16px;color:#e08080;font-size:11px;line-height:1.7;}
+
+.sequence-section{background:#f4faf6;border:1px solid #a8d8b8;border-radius:7px;padding:14px 15px;margin-top:13px;}
+.seq-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#2a7a40;margin-bottom:11px;font-weight:600;}
+.seq-body{font-size:13px;line-height:1.85;color:#222;white-space:pre-wrap;outline:none;border:1px solid transparent;border-radius:4px;padding:5px;transition:border-color 0.2s;}
+.seq-body:focus{border-color:#a8d8b8;}
+.seq-body a{color:#5572c8;text-decoration:underline;}
+.btn-copy-seq{background:#111;color:#fff;border:none;border-radius:5px;padding:9px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:opacity 0.2s;margin-top:11px;}
+.btn-copy-seq:hover{opacity:0.75;}
+
+.error-card{background:#fff8f8;border:1px solid #e8b0b0;border-radius:8px;padding:16px;color:#b03030;font-size:13px;line-height:1.7;}
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:6px;}
-.ei{font-size:32px;margin-bottom:8px;opacity:0.3;}
-.et{font-family:'Playfair Display',serif;font-size:17px;color:#fff;opacity:0.4;}
-.es{font-size:10px;color:#aaa;margin-bottom:12px;}
-.demo-links{display:flex;flex-direction:column;gap:5px;width:100%;max-width:300px;}
-.demo-link{background:var(--surface2);border:1px solid #555;border-radius:5px;padding:7px 12px;font-size:9px;color:#ccc;cursor:pointer;transition:all 0.15s;text-align:left;}
-.demo-link:hover{border-color:var(--accent);color:#a0b4ff;}
+.ei{font-size:38px;margin-bottom:8px;opacity:0.3;}
+.et{font-family:'Playfair Display',serif;font-size:19px;color:#111;opacity:0.35;}
+.es{font-size:13px;color:#aaa;margin-top:5px;}
 </style>
 </head>
 <body>
 
+<!-- ── NAME SCREEN ── -->
 <div id="nameScreen">
-  <div style="text-align:center">
-    <div class="chia-logo">Chi<span>a</span></div>
-    <div class="chia-tag" style="margin-top:8px">Podcast pitch intelligence</div>
+  <div class="chia-logo">Chi<span>a</span></div>
+  <div class="chia-tag">Podcast Pitch Intelligence</div>
+  <div class="name-wrap">
+    <div class="name-label">Your name</div>
+    <input id="writerName" class="name-input" type="text" placeholder="e.g. Gözde" onkeydown="if(event.key==='Enter')confirmName()">
   </div>
-  <div class="name-box">
-    <div class="name-label">What is your name?</div>
-    <input class="name-input" id="writerName" placeholder="Your first name" onkeydown="if(event.key==='Enter')confirmName()"/>
-    <button class="main-btn" onclick="confirmName()">Continue</button>
-  </div>
+  <button class="main-btn" onclick="confirmName()">Enter Chia →</button>
 </div>
 
+<!-- ── CLIENT SCREEN ── -->
 <div id="clientScreen">
-  <div style="text-align:center">
-    <div class="chia-logo" style="font-size:32px">Chi<span>a</span></div>
-    <div id="clientWelcome" style="font-size:11px;color:#ccc;margin-top:8px;"></div>
-  </div>
+  <div class="chia-logo">Chi<span>a</span></div>
+  <div id="clientWelcome" class="client-welcome"></div>
   <div class="client-select-wrap">
-    <div class="client-select-label">Select your client</div>
-    <select class="client-dropdown" id="clientDropdown">
-      <option value="">Choose a client...</option>
+    <div class="client-select-label">Select client</div>
+    <select id="clientDropdown" class="client-dropdown">
+      <option value="">— choose —</option>
       <option value="zach">Zach Brittle</option>
       <option value="kat">Kat Courtney</option>
     </select>
-    <button class="main-btn" onclick="confirmClient()">Open workspace</button>
   </div>
+  <button class="main-btn" onclick="goToTool()">Continue →</button>
 </div>
 
+<!-- ── TOOL SCREEN ── -->
 <div id="toolScreen">
   <div class="topbar">
     <div class="tlogo">Chi<span>a</span></div>
-    <button class="back-btn" onclick="goBack()">← Switch client</button>
-    <div class="client-badge" id="clientBadge"></div>
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <span class="client-badge" id="clientBadge"></span>
+    <span class="angle-label">Angle:</span>
     <div class="angle-selector" id="angleSelector"></div>
     <div class="input-area">
-      <input class="url-input" id="urlInput" placeholder="Paste Apple Podcasts link…"/>
-      <button class="research-btn" id="researchBtn" onclick="startResearch()">Research →</button>
+      <input id="urlInput" class="url-input" type="text" placeholder="Paste Apple Podcasts URL…">
+      <button id="researchBtn" class="research-btn" onclick="startResearch()">Research →</button>
     </div>
   </div>
   <div class="main">
-    <div class="brain-panel" id="brainPanel"></div>
+    <div class="brain-panel" id="brainPanel">
+      <div class="panel-label">Client Brain</div>
+    </div>
     <div class="cards-area" id="cardsArea">
       <div class="empty-state" id="emptyState">
         <div class="ei" id="emptyIcon">🎙</div>
         <div class="et">Ready to research</div>
-        <div class="es">Paste the Apple Podcasts link above and hit Research.</div>
-        <div class="demo-links" id="demoLinks"></div>
+        <div class="es">Select an angle above, paste an Apple Podcasts URL, and hit Research →</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ── WEBHOOK URL ──────────────────────────────────────────────
+let writerName = '';
+let activeClient = null;
+let activeAngle = null;
+const cardData = {};
+
 const MAKE_WEBHOOK = 'https://hook.eu2.make.com/cqx8prxomtaej0ugt7s19or79mhroghs';
 
-let writerName='';let activeClient=null;let activeAngle=null;
-
-const ANGLES={
-  zach:[
-    {id:'relational',label:'Relationships: Relational Recovery',positioning:`Zach is the only therapist certified in both RLT and the Gottman Method. He wants to share why fixing the "obvious problems" often doesn't lead to real change. In 2020 he had his last drink. Sobriety didn't improve his marriage — it made his wife's drinking worse, his teenage daughter shut them out, and exposed issues in their marriage. What healed their connection wasn't working harder; it was how Zach showed up — relational recovery. Key topics: stories we tell ourselves, parts-based lens, and the seven Cs of relational practices.`},
-    {id:'sobriety',label:'Sobriety: Relational Recovery',positioning:`Zach is a recovering alcoholic and the only therapist certified in both RLT and the Gottman Method. For two decades he numbed anger with alcohol. Even totally sober he destroyed an aluminum Christmas tree stand, left to buy a hammer, came back and kept going. On Nov 13 2020 he had his last drink. Instead of improvement he got raw anger. What changed things was emotional sobriety through relational recovery. Key topics: stories we tell ourselves, the seven Cs, healing what's under the alcoholism, one partner sober and the other still drinking.`},
-    {id:'swap',label:'Podcast Swap',positioning:`Zach hosts Marriage Therapy Radio (4M+ downloads) — authentic conversations with couples about love, growth, and navigating life together. We can offer swaps to podcast hosts if they have a partner who can join them on his show.`}
+const ANGLES = {
+  zach: [
+    {
+      id: 'relational',
+      label: 'Relationships: Relational Recovery',
+      positioning: `Zach is the only therapist certified in both RLT and the Gottman Method. He wants to share why fixing the "obvious problems" often doesn't lead to real change. In 2020 he had his last drink. Sobriety didn't improve his marriage — it made his wife's drinking worse, his teenage daughter shut them out, and exposed issues in their marriage. What healed their connection wasn't working harder; it was how Zach showed up — relational recovery. Key topics: stories we tell ourselves, parts-based lens, and the seven Cs of relational practices.`
+    },
+    {
+      id: 'sobriety',
+      label: 'Sobriety: Relational Recovery',
+      positioning: `Zach is a recovering alcoholic and the only therapist certified in both RLT and the Gottman Method. For two decades he numbed anger with alcohol. Even totally sober he destroyed an aluminum Christmas tree stand, left to buy a hammer, came back and kept going. On Nov 13 2020 he had his last drink. Instead of improvement he got raw anger. What changed things was emotional sobriety through relational recovery. Key topics: stories we tell ourselves, the seven Cs, healing what's under the alcoholism, one partner sober and the other still drinking.`
+    },
+    {
+      id: 'swap',
+      label: 'Podcast Swap',
+      positioning: `Zach hosts Marriage Therapy Radio (4M+ downloads) — authentic conversations with couples about love, growth, and navigating life together. We can offer swaps to podcast hosts if they have a partner who can join them on his show. The show is NOT therapy — it's about helping couples feel inspired and less alone.`
+    }
   ],
-  kat:[
-    {id:'safety',label:'Plant Medicine & Safety',positioning:`Kat is a traditionally trained Ayahuasquera and Huachumera with 20+ years and 1,500+ ceremonies. She wants to share what happens when you drink ayahuasca for 30 consecutive nights alone — lessons about stability vs. intensity.`},
-    {id:'mentalhealth',label:'Plant Medicine & Mental Health',positioning:`Kat's personal story of transformation: from bulimia, bipolar disorder, and functioning alcoholism working at Disney, to becoming a plant medicine facilitator.`},
-    {id:'death',label:'Death Doula',positioning:`Kat is a certified Death Doula who bridges traditional Amazonian lineage healing with end-of-life transitions. She lost her father — this opened her path to death doula work.`}
+  kat: [
+    {
+      id: 'safety',
+      label: 'Plant Medicine & Safety',
+      positioning: `Kat is a traditionally trained Ayahuasquera and Huachumera with 20+ years and 1,500+ ceremonies. She wants to share what happens when you drink ayahuasca for 30 consecutive nights alone — lessons about stability vs. intensity. Key topics: why chasing peak experiences can be destabilizing, when to microdose vs ceremonial vs divine doses, plant dietas and building relationships with plant consciousness.`
+    },
+    {
+      id: 'mentalhealth',
+      label: 'Plant Medicine & Mental Health',
+      positioning: `Kat's personal story of transformation: from bulimia, bipolar disorder, and functioning alcoholism working at Disney, to becoming a plant medicine facilitator. Key topics: how plant medicine can support trauma, addiction, depression and body dysmorphia without re-traumatizing the nervous system, integration coaching, healing isn't a quick fix.`
+    },
+    {
+      id: 'death',
+      label: 'Death Doula',
+      positioning: `Kat is a certified Death Doula who bridges traditional Amazonian lineage healing with end-of-life transitions. She lost her father — this opened her path to death doula work. Key topics: what sitting with dying people teaches about psychedelic surrender, why fear of ego death mirrors fear of actual death, how death doula training creates safer containers for trauma survivors.`
+    }
   ]
 };
 
-const CLIENTS={
-  zach:{name:'Zach Brittle',emoji:'🎙',badge:'Zach Brittle · Marriage Therapy Radio',angles:ANGLES.zach,
-    brain:`<div class="ccm"><div class="ccm-name">Zach Brittle</div><div class="ccm-role">LMHC · Gottman Therapist · RLT Therapist · Host, Marriage Therapy Radio</div><div class="ccm-goal">▸ April 2027 Book Launch — RLT positioning</div></div>
-    <div class="stats-row"><div class="stat-box"><span class="stat-num">16</span><div class="stat-label">Booked</div></div><div class="stat-box"><span class="stat-num">4M+</span><div class="stat-label">Downloads</div></div></div>
-    <div class="bs"><div class="bst">Core Stories</div>
-    <div class="bi"><strong>Christmas tree:</strong> Stone-cold sober, destroyed an aluminum tree stand. Left, bought a hammer, came back and kept going.</div>
-    <div class="bi"><strong>Nov 13 2020:</strong> Last drink. Expected life to improve — got raw anger and a destabilized marriage.</div>
-    <div class="bi"><strong>Rebecca:</strong> As Zach recovered, wife's drinking worsened. She joined him 8 months later.</div>
-    <div class="bi"><strong>"Fired" as parents:</strong> 15yr old daughter shut them out completely during recovery.</div></div>
-    <div class="bs"><div class="bst">Social Proof</div>
-    <div class="bi">NYT · WaPo · Vanity Fair · Men's Health · HuffPost</div>
-    <div class="bi">Top 0.01%: Couple Things · Top 0.5%: Balancing Act, Hello Someday</div></div>
-    <div class="bs"><div class="bst">Avoid</div>
-    <div class="av">Shows with strong religious framing</div>
-    <div class="av">Trump supporters / right-wing hosts</div></div>`},
-  kat:{name:'Kat Courtney',emoji:'🌿',badge:'Kat Courtney · Plant Medicine People',angles:ANGLES.kat,
-    brain:`<div class="ccm"><div class="ccm-name">Kat Courtney</div><div class="ccm-role">Ayahuasquera · Huachumera · Death Doula · Founder, Plant Medicine People</div><div class="ccm-goal">▸ Retreat awareness · Drive applicants</div></div>
-    <div class="stats-row"><div class="stat-box"><span class="stat-num">13</span><div class="stat-label">Booked</div></div><div class="stat-box"><span class="stat-num">1500+</span><div class="stat-label">Ceremonies</div></div></div>
-    <div class="bs"><div class="bst">Core Stories</div>
-    <div class="bi"><strong>Origin:</strong> 20s — bulimia, bipolar disorder, functioning alcoholism at Disney</div>
-    <div class="bi"><strong>First ceremony:</strong> Partner invited her to Peruvian jungle — said yes without knowing anything</div>
-    <div class="bi"><strong>30 nights alone:</strong> Drank ayahuasca 30 consecutive nights alone — stability vs. intensity</div>
-    <div class="bi"><strong>Death Doula:</strong> Lost her father — led to death doula training</div></div>
-    <div class="bs"><div class="bst">Avoid</div>
-    <div class="av">Biohacking / shallow psychedelic hype framing</div>
-    <div class="av">Colonizing or disrespectful indigenous narratives</div></div>`}
+const CLIENTS = {
+  zach: {
+    name: 'Zach Brittle',
+    emoji: '🎙',
+    badge: 'Zach Brittle · Marriage Therapy Radio',
+    angles: ANGLES.zach,
+    brain: `
+      <div class="ccm">
+        <div class="ccm-name">Zach Brittle</div>
+        <div class="ccm-role">LMHC · Gottman Therapist · RLT Therapist · Host, Marriage Therapy Radio</div>
+        <div class="ccm-goal">▸ April 2027 Book Launch — RLT positioning</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><span class="stat-num">16</span><div class="stat-label">Booked</div></div>
+        <div class="stat-box"><span class="stat-num">4M+</span><div class="stat-label">Downloads</div></div>
+      </div>
+      <div class="bs">
+        <div class="bst">Core Stories</div>
+        <div class="bi"><strong>Christmas tree:</strong> Stone-cold sober, destroyed an aluminum tree stand. Left, bought a hammer, came back and kept going.</div>
+        <div class="bi"><strong>Nov 13 2020:</strong> Last drink. Expected life to improve — got raw anger and a destabilized marriage.</div>
+        <div class="bi"><strong>Rebecca:</strong> As Zach recovered, wife's drinking worsened. She joined him 8 months later.</div>
+        <div class="bi"><strong>"Fired" as parents:</strong> 15yr old daughter shut them out completely during recovery.</div>
+        <div class="bi"><strong>The miracle:</strong> "It won't look the way you think it will." Staying present, not fixing.</div>
+      </div>
+      <div class="bs">
+        <div class="bst">Unconventional Takes</div>
+        <div class="bi">"Stop working on your marriage" — do personal work, learn to play</div>
+        <div class="bi">Challenges myths: "don't go to bed angry", "communication is the key"</div>
+      </div>
+      <div class="bs">
+        <div class="bst">Social Proof</div>
+        <div class="bi">NYT · WaPo · Vanity Fair · Men's Health · HuffPost</div>
+        <div class="bi">Top 0.01%: Couple Things · Top 0.5%: Balancing Act, Hello Someday</div>
+      </div>
+      <div class="bs">
+        <div class="bst">Avoid</div>
+        <div class="av">Shows with strong religious framing</div>
+        <div class="av">Trump supporters / right-wing hosts</div>
+      </div>`
+  },
+  kat: {
+    name: 'Kat Courtney',
+    emoji: '🌿',
+    badge: 'Kat Courtney · Plant Medicine People',
+    angles: ANGLES.kat,
+    brain: `
+      <div class="ccm">
+        <div class="ccm-name">Kat Courtney</div>
+        <div class="ccm-role">Ayahuasquera · Huachumera · Death Doula · Founder, Plant Medicine People · Co-founder, Bassé</div>
+        <div class="ccm-goal">▸ Retreat awareness · Drive applicants</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><span class="stat-num">13</span><div class="stat-label">Booked</div></div>
+        <div class="stat-box"><span class="stat-num">1500+</span><div class="stat-label">Ceremonies</div></div>
+      </div>
+      <div class="bs">
+        <div class="bst">Core Stories</div>
+        <div class="bi"><strong>Origin:</strong> 20s — bulimia, bipolar disorder, functioning alcoholism at Disney</div>
+        <div class="bi"><strong>First ceremony:</strong> Partner invited her to Peruvian jungle — said yes without knowing anything</div>
+        <div class="bi"><strong>30 nights alone:</strong> Drank ayahuasca 30 consecutive nights alone — stability vs. intensity</div>
+        <div class="bi"><strong>Death Doula:</strong> Lost her father — led to death doula training, bridges afterlife and plant medicine</div>
+      </div>
+      <div class="bs">
+        <div class="bst">Avoid</div>
+        <div class="av">Biohacking / shallow psychedelic hype framing</div>
+        <div class="av">Colonizing or disrespectful indigenous narratives</div>
+        <div class="av">Misogynistic or homophobic spaces</div>
+      </div>`
+  }
 };
 
-function confirmName(){const n=document.getElementById('writerName').value.trim();if(!n)return;writerName=n;document.getElementById('nameScreen').style.display='none';document.getElementById('clientScreen').style.display='flex';document.getElementById('clientWelcome').textContent=`Welcome, ${n}. Who are you pitching today?`;}
-function confirmClient(){const val=document.getElementById('clientDropdown').value;if(!val)return;selectClient(val);}
-function selectClient(key){
-  activeClient=key;const c=CLIENTS[key];activeAngle=c.angles[0].id;
-  document.getElementById('clientScreen').style.display='none';document.getElementById('toolScreen').style.display='flex';
-  document.getElementById('clientBadge').textContent=c.badge;
-  document.getElementById('angleSelector').innerHTML=c.angles.map((a,i)=>`<button class="angle-btn ${i===0?'active':''}" onclick="setAngle(this,'${a.id}')">${a.label}</button>`).join('');
-  document.getElementById('brainPanel').innerHTML=`<div class="panel-label">Client Brain</div>${c.brain}`;
-  updateAngleBox();
-  document.getElementById('emptyIcon').textContent=c.emoji;
-  document.getElementById('demoLinks').innerHTML='';
-  document.getElementById('emptyState').style.display='flex';
-  document.getElementById('urlInput').value='';
-  document.querySelectorAll('.rcard').forEach(el=>el.remove());
-  document.querySelectorAll('.status-bar').forEach(el=>el.remove());
-  document.querySelectorAll('.error-card').forEach(el=>el.remove());
+// ── SCREENS ──────────────────────────────────────────────────
+
+function confirmName() {
+  const n = document.getElementById('writerName').value.trim();
+  if (!n) return;
+  writerName = n;
+  document.getElementById('nameScreen').style.display = 'none';
+  document.getElementById('clientScreen').style.display = 'flex';
+  document.getElementById('clientWelcome').textContent = `Welcome, ${n}. Who are you pitching today?`;
 }
-function updateAngleBox(){
-  const c=CLIENTS[activeClient];const angle=c.angles.find(a=>a.id===activeAngle);if(!angle)return;
-  const old=document.getElementById('angleBox');if(old)old.remove();
-  const box=document.createElement('div');box.className='angle-box';box.id='angleBox';
-  box.innerHTML=`<div class="angle-box-title">Active Angle Positioning</div><div class="angle-box-text">${angle.positioning}</div>`;
+
+function goToTool() {
+  const key = document.getElementById('clientDropdown').value;
+  if (!key) return;
+  selectClient(key);
+}
+
+function selectClient(key) {
+  activeClient = key;
+  const c = CLIENTS[key];
+
+  // Badge
+  document.getElementById('clientBadge').textContent = c.badge;
+
+  // Angle buttons — auto-select first
+  const sel = document.getElementById('angleSelector');
+  sel.innerHTML = c.angles.map((a, i) =>
+    `<button class="angle-btn${i === 0 ? ' active' : ''}" onclick="setAngle(this,'${a.id}')">${a.label}</button>`
+  ).join('');
+  activeAngle = c.angles[0].id;
+
+  // Brain panel
+  document.getElementById('brainPanel').innerHTML = `<div class="panel-label">Client Brain</div>${c.brain}`;
+  updateAngleBox();
+
+  // Cards area
+  document.getElementById('emptyIcon').textContent = c.emoji;
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('urlInput').value = '';
+  document.querySelectorAll('.rcard, .status-bar, .error-card').forEach(el => el.remove());
+
+  document.getElementById('clientScreen').style.display = 'none';
+  document.getElementById('toolScreen').style.display = 'flex';
+}
+
+function goBack() {
+  document.getElementById('toolScreen').style.display = 'none';
+  document.getElementById('clientScreen').style.display = 'flex';
+  activeClient = null;
+  activeAngle = null;
+}
+
+// ── ANGLES ───────────────────────────────────────────────────
+
+function setAngle(btn, id) {
+  activeAngle = id;
+  document.querySelectorAll('.angle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateAngleBox();
+}
+
+function updateAngleBox() {
+  const c = CLIENTS[activeClient];
+  const angle = c.angles.find(a => a.id === activeAngle);
+  if (!angle) return;
+  const existing = document.getElementById('brainPanel').querySelector('.angle-box');
+  if (existing) existing.remove();
+  const box = document.createElement('div');
+  box.className = 'angle-box';
+  box.innerHTML = `<div class="angle-box-title">Active Angle</div><div class="angle-box-text">${angle.positioning}</div>`;
   document.getElementById('brainPanel').appendChild(box);
 }
-function goBack(){document.getElementById('toolScreen').style.display='none';document.getElementById('clientScreen').style.display='flex';activeClient=null;}
-function setAngle(btn,id){activeAngle=id;document.querySelectorAll('.angle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');updateAngleBox();}
 
-async function startResearch(){
-  const url=document.getElementById('urlInput').value.trim();
-  if(!url){alert('Paste an Apple Podcasts link first.');return;}
-  const btn=document.getElementById('researchBtn');
-  btn.disabled=true;btn.textContent='Researching…';
-  document.getElementById('emptyState').style.display='none';
-  document.querySelectorAll('.status-bar').forEach(el=>el.remove());
-  document.querySelectorAll('.error-card').forEach(el=>el.remove());
+// ── RESEARCH ─────────────────────────────────────────────────
 
-  const c=CLIENTS[activeClient];
-  const angle=c.angles.find(a=>a.id===activeAngle);
+async function startResearch() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) { alert('Paste an Apple Podcasts link first.'); return; }
 
-  const status=document.createElement('div');
-  status.className='status-bar';status.id='statusBar';
-  status.innerHTML=`<div class="pulse"></div><span id="statusText">Sending to research engine…</span>`;
+  const btn = document.getElementById('researchBtn');
+  btn.disabled = true; btn.textContent = 'Researching…';
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.querySelectorAll('.status-bar, .error-card').forEach(el => el.remove());
+
+  const c = CLIENTS[activeClient];
+  const angle = c.angles.find(a => a.id === activeAngle);
+
+  const status = document.createElement('div');
+  status.className = 'status-bar'; status.id = 'statusBar';
+  status.innerHTML = `<div class="pulse"></div><span id="statusText">Sending to research engine…</span>`;
   document.getElementById('cardsArea').prepend(status);
 
-  const steps=[
+  const steps = [
     'Fetching show data from iTunes…',
     'Identifying host and scanning episodes…',
     'Pulling social media follower counts…',
@@ -316,155 +450,190 @@ async function startResearch(){
     'Running devil\'s advocate review…',
     `Generating pitch in ${writerName}'s voice…`
   ];
-  let i=0;
-  const iv=setInterval(()=>{
-    if(i<steps.length&&document.getElementById('statusText')){
-      document.getElementById('statusText').textContent=steps[i++];
-    }
-  },3000);
+  let i = 0;
+  const iv = setInterval(() => {
+    const el = document.getElementById('statusText');
+    if (el && i < steps.length) el.textContent = steps[i++];
+  }, 3000);
 
   try {
     const response = await fetch(MAKE_WEBHOOK, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         apple_podcasts_url: url,
         client_name: c.name,
         selected_angle: angle ? angle.label : activeAngle,
+        angle_positioning: angle ? angle.positioning : '',
         pitch_style: 'Intro Personalized',
         writer_name: writerName
       })
     });
 
     clearInterval(iv);
-    if(document.getElementById('statusBar'))document.getElementById('statusBar').remove();
+    document.getElementById('statusBar')?.remove();
 
-    if(!response.ok){throw new Error(`Make returned ${response.status}`);}
+    if (!response.ok) throw new Error(`Make returned ${response.status}`);
 
-    const data = await response.json();
-    btn.disabled=false;btn.textContent='Research →';
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      // Make returned plain "Accepted" — treat as acknowledged, wait for callback
+      data = { status: 'accepted' };
+    }
+    btn.disabled = false; btn.textContent = 'Research →';
     renderLiveCard(data);
 
-  } catch(err) {
+  } catch (err) {
     clearInterval(iv);
-    if(document.getElementById('statusBar'))document.getElementById('statusBar').remove();
-    btn.disabled=false;btn.textContent='Research →';
+    document.getElementById('statusBar')?.remove();
+    btn.disabled = false; btn.textContent = 'Research →';
 
-    const errEl=document.createElement('div');
-    errEl.className='error-card';
-    errEl.innerHTML=`<strong>Research failed</strong><br><br>Make.com returned an error: ${err.message}<br><br>Check that your Make scenario is turned ON and all modules are connected correctly.`;
+    const errEl = document.createElement('div');
+    errEl.className = 'error-card';
+    errEl.innerHTML = `<strong>Research failed</strong><br><br>Error: ${err.message}<br><br>Check that your Make scenario is turned ON and all modules are connected correctly.`;
     document.getElementById('cardsArea').prepend(errEl);
   }
 }
 
-function renderLiveCard(d){
-  const id='card_'+Date.now();
-  const fitClass=d.fit_score==='strong'?'fit-strong':d.fit_score==='possible'?'fit-possible':'fit-no';
-  const fitLabel=d.fit_score==='strong'?'Strong Fit':d.fit_score==='possible'?'Possible Fit':'Not a Fit';
+// ── RENDER CARD ───────────────────────────────────────────────
 
-  const guestBanner=d.guest_appeared_on_client_show?`<div class="guest-banner">⭐ ${d.guest_appeared_note||'Host has previously appeared on client show'}</div>`:'';
-  const connBanner=d.personal_connection&&d.personal_connection_link?`<div class="connection-banner">🔗 Verified personal connection: ${d.personal_connection} <a href="${d.personal_connection_link}" target="_blank" style="color:#6aacf0;margin-left:4px;">Verify →</a></div>`:'';
+function renderLiveCard(d) {
+  const id = 'card_' + Date.now();
 
-  const socialHtml=(d.social_instagram||d.social_twitter||d.social_website)?
-    [d.social_instagram,d.social_twitter,d.social_website].filter(Boolean).map(s=>
-      `<div class="social-chip"><span class="social-chip-platform">${s.split(':')[0]||'Social'}</span><span class="social-chip-followers">${s}</span></div>`
-    ).join(''):'';
+  // Store follow-ups by card ID to avoid inline escaping issues
+  cardData[id] = {
+    fu1: (d.follow_up_1 || '').replace(/\[W\]/g, writerName),
+    fu2: (d.follow_up_2 || '').replace(/\[W\]/g, writerName)
+  };
 
-  const dlHtml=d.downloads?`<div class="downloads-badge">🎧 ${d.downloads}</div>`:'';
+  const fitClass = d.fit_score === 'strong' ? 'fit-strong' : d.fit_score === 'possible' ? 'fit-possible' : 'fit-no';
+  const fitLabel = d.fit_score === 'strong' ? 'Strong Fit' : d.fit_score === 'possible' ? 'Possible Fit' : 'Not a Fit';
 
-  const epTag=d.previous_episode_match?
-    `<div class="ep-tag">✅ ${d.previous_episode_match}</div>`:
-    `<div class="ep-tag">⚡ No direct episode match found — topic gap opportunity</div>`;
+  const guestBanner = d.guest_appeared_on_client_show
+    ? `<div class="guest-banner">⭐ ${d.guest_appeared_note || 'Host has previously appeared on client show'}</div>` : '';
+  const connBanner = d.personal_connection && d.personal_connection_link
+    ? `<div class="connection-banner">🔗 Verified personal connection: ${d.personal_connection} <a href="${d.personal_connection_link}" target="_blank" style="color:#3050b8;margin-left:4px;">Verify →</a></div>` : '';
 
-  const verdictClass=d.pitch_verdict==='pitch now'?'verdict-now':d.pitch_verdict==='wait'?'verdict-wait':'verdict-angle';
+  const socialHtml = [d.social_instagram, d.social_twitter, d.social_website]
+    .filter(Boolean)
+    .map(s => `<div class="social-chip"><span class="social-chip-platform">${s.split(':')[0] || 'Social'}</span><span class="social-chip-followers">${s}</span></div>`)
+    .join('');
 
-  const devilItems=(d.devils_advocate||[]).map(item=>`<div class="devil-item">${item}</div>`).join('');
+  const dlHtml = d.downloads ? `<div class="downloads-badge">🎧 ${d.downloads}</div>` : '';
 
-  const showPhrasesHtml=d.show_phrases&&d.show_phrases.length?
-    `<div class="sec"><div class="sl">💬 Phrases pulled from show description</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${d.show_phrases.map(p=>`<span style="background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:2px 8px;font-size:9px;color:#a0b4ff;">"${p}"</span>`).join('')}</div></div>`:'';
+  const epTag = d.previous_episode_match
+    ? `<div class="ep-tag">✅ ${d.previous_episode_match}</div>`
+    : `<div class="ep-tag">⚡ No direct episode match — topic gap opportunity</div>`;
 
-  const formSection=d.is_contact_form?
-    `<div class="pitch-section"><div class="sl" style="margin-bottom:8px">📋 This show uses a contact form</div>
-    <a href="${d.contact_form_url}" target="_blank" style="color:#a0b4ff;font-size:10px;">Open form →</a>
-    </div>`:
-    `<div class="pitch-section">
-      <div class="style-selector-label">Pitch Style</div>
-      <div class="sl" style="margin-bottom:4px">✍ Suggested Pitch — <span class="psb">${d.suggested_pitch_subject||''}</span></div>
-      <div class="pitch-edit-note">Click into the pitch to edit directly.</div>
-      <div class="pitch-body" id="pb_${id}" contenteditable="true">${(d.suggested_pitch||'').replace(/\n/g,'<br>')}</div>
-      <div class="copy-row">
-        <button class="btn-copy" onclick="copyPitch('${id}')">⎘ Copy Pitch</button>
-        <button class="btn-approve" onclick="approvePitch('${id}','${(d.follow_up_1||'').replace(/'/g,"\\'")}','${(d.follow_up_2||'').replace(/'/g,"\\'")}')">✓ Approve and Build Sequence</button>
-      </div>
-      <div id="seq_${id}"></div>
-    </div>`;
+  const verdictClass = d.pitch_verdict === 'pitch now' ? 'verdict-now' : d.pitch_verdict === 'wait' ? 'verdict-wait' : 'verdict-angle';
 
-  const el=document.createElement('div');el.className='rcard';el.id=id;
-  el.innerHTML=`
+  const devilItems = (d.devils_advocate || []).map(item => `<div class="devil-item">${item}</div>`).join('');
+
+  const showPhrasesHtml = d.show_phrases && d.show_phrases.length
+    ? `<div class="sec"><div class="sl">💬 Phrases from show description</div>
+       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">
+         ${d.show_phrases.map(p => `<span style="background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:3px;padding:3px 9px;font-size:12px;color:#5572c8;">"${p}"</span>`).join('')}
+       </div></div>` : '';
+
+  const formSection = d.is_contact_form
+    ? `<div class="pitch-section">
+        <div class="sl" style="margin-bottom:8px">📋 This show uses a contact form</div>
+        <a href="${d.contact_form_url}" target="_blank" style="color:var(--accent);font-size:13px;">Open form →</a>
+       </div>`
+    : `<div class="pitch-section">
+        <div class="sl" style="margin-bottom:5px">✍ Suggested Pitch — <span class="psb">${d.suggested_pitch_subject || ''}</span></div>
+        <div class="pitch-edit-note">Click into the pitch to edit directly.</div>
+        <div class="pitch-body" id="pb_${id}" contenteditable="true">${(d.suggested_pitch || '').replace(/\n/g, '<br>')}</div>
+        <div class="copy-row">
+          <button class="btn-copy" onclick="copyPitch('${id}')">⎘ Copy Pitch</button>
+          <button class="btn-approve" onclick="approvePitch('${id}')">✓ Approve and Build Sequence</button>
+        </div>
+        <div id="seq_${id}"></div>
+       </div>`;
+
+  const el = document.createElement('div');
+  el.className = 'rcard'; el.id = id;
+  el.innerHTML = `
     ${guestBanner}${connBanner}
     <div class="rcard-top">
       <div class="show-art">🎙</div>
       <div class="show-meta">
-        <div class="show-name">${d.show_name||'Unknown Show'}</div>
-        <div class="show-host">${d.host_name||''}</div>
+        <div class="show-name">${d.show_name || 'Unknown Show'}</div>
+        <div class="show-host">${d.host_name || ''}</div>
         <div class="social-row">${socialHtml}</div>
         ${dlHtml}
       </div>
       <div class="fit-badge ${fitClass}">✦ ${fitLabel}</div>
     </div>
     ${showPhrasesHtml}
-    <div class="sec"><div class="sl">🎙 Host Profile</div><div class="st">${d.host_profile||''}</div></div>
-    <div class="sec"><div class="sl">👥 Audience</div>
+    <div class="sec"><div class="sl">🎙 Host Profile</div><div class="st">${d.host_profile || ''}</div></div>
+    <div class="sec">
+      <div class="sl">👥 Audience</div>
       <div class="audience-grid">
-        <div class="audience-box"><div class="audience-box-label">Who listens</div><div class="audience-box-text">${d.audience_who||''}</div></div>
-        <div class="audience-box"><div class="audience-box-label">What they need</div><div class="audience-box-text">${d.audience_needs||''}</div></div>
-        <div class="audience-box"><div class="audience-box-label">What they struggle with</div><div class="audience-box-text">${d.audience_struggles||''}</div></div>
-        <div class="audience-box"><div class="audience-box-label">Guest type that works</div><div class="audience-box-text">${d.audience_guest_type||''}</div></div>
+        <div class="audience-box"><div class="audience-box-label">Who listens</div><div class="audience-box-text">${d.audience_who || ''}</div></div>
+        <div class="audience-box"><div class="audience-box-label">What they need</div><div class="audience-box-text">${d.audience_needs || ''}</div></div>
+        <div class="audience-box"><div class="audience-box-label">What they struggle with</div><div class="audience-box-text">${d.audience_struggles || ''}</div></div>
+        <div class="audience-box"><div class="audience-box-label">Guest type that works</div><div class="audience-box-text">${d.audience_guest_type || ''}</div></div>
       </div>
     </div>
     <div class="sec">
-      <div class="sl">🔍 Topic Coverage and Differentiation</div>
-      <div class="st">${d.topic_gap||''}<br>${epTag}</div>
+      <div class="sl">🔍 Topic Coverage & Differentiation</div>
+      <div class="st">${d.topic_gap || ''}</div>
+      ${epTag}
       <div class="diff-row">
-        <div class="diff-box diff-same"><div class="diff-box-label">Same as before</div><div class="diff-box-text">${d.differentiation_same||''}</div></div>
-        <div class="diff-box diff-diff"><div class="diff-box-label">What's different</div><div class="diff-box-text">${d.differentiation_different||''}</div></div>
+        <div class="diff-box diff-same"><div class="diff-box-label">Same as before</div><div class="diff-box-text">${d.differentiation_same || ''}</div></div>
+        <div class="diff-box diff-diff"><div class="diff-box-label">What's different</div><div class="diff-box-text">${d.differentiation_different || ''}</div></div>
       </div>
-      <div class="diff-verdict ${verdictClass}">${d.pitch_verdict_reason||d.pitch_verdict||''}</div>
+      <div class="diff-verdict ${verdictClass}">${d.pitch_verdict_reason || d.pitch_verdict || ''}</div>
     </div>
-    <div class="sec"><div class="sl">⚡ Why This Connection Works</div><div class="st">${d.personal_connection||'Researching connection...'}</div></div>
+    <div class="sec"><div class="sl">⚡ Why This Connection Works</div><div class="st">${d.personal_connection || ''}</div></div>
     <div class="devil-section">
       <div class="devil-label">⚠ Devil's Advocate — Read before writing</div>
       ${devilItems}
-      <div class="devil-note">How to use this: ${d.devils_advocate_note||''}</div>
+      <div class="devil-note">How to use this: ${d.devils_advocate_note || ''}</div>
     </div>
     ${formSection}`;
 
   document.getElementById('cardsArea').appendChild(el);
-  el.scrollIntoView({behavior:'smooth',block:'start'});
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function approvePitch(id, fu1, fu2){
-  const pitch=document.getElementById(`pb_${id}`).innerText;
-  const seq=document.getElementById(`seq_${id}`);
-  seq.innerHTML=`<div class="sequence-section">
-    <div class="seq-label">Full Pitch Sequence — click to edit any section</div>
-    <div class="seq-body" id="sb_${id}" contenteditable="true">${pitch}\n\nFollow-up 1\n\n${fu1}\n\nFollow-up 2\n\n${fu2}</div>
-    <button class="btn-copy-seq" onclick="copySeq('${id}')">⎘ Copy Full Sequence</button>
-  </div>`;
-  seq.scrollIntoView({behavior:'smooth',block:'start'});
+// ── ACTIONS ───────────────────────────────────────────────────
+
+function copyPitch(id) {
+  const el = document.getElementById(`pb_${id}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).catch(() => {});
+  const btn = document.getElementById(id).querySelector('.btn-copy');
+  if (!btn) return;
+  const orig = btn.textContent; btn.textContent = '✓ Copied!';
+  setTimeout(() => btn.textContent = orig, 2000);
 }
 
-function copyPitch(id){
-  const el=document.getElementById(`pb_${id}`);if(!el)return;
-  navigator.clipboard.writeText(el.innerText).catch(()=>{});
-  const btn=document.getElementById(id).querySelector('.btn-copy');if(!btn)return;
-  const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,2000);
+function approvePitch(id) {
+  const pitch = document.getElementById(`pb_${id}`).innerText;
+  const { fu1, fu2 } = cardData[id] || {};
+  const seq = document.getElementById(`seq_${id}`);
+  seq.innerHTML = `
+    <div class="sequence-section">
+      <div class="seq-label">Full Pitch Sequence — click to edit any section</div>
+      <div class="seq-body" id="sb_${id}" contenteditable="true">PITCH 1 — INITIAL PITCH\n\n${pitch}\n\n---\n\nFOLLOW-UP 1\n\n${fu1 || ''}\n\n---\n\nFOLLOW-UP 2\n\n${fu2 || ''}</div>
+      <button class="btn-copy-seq" onclick="copySeq('${id}')">⎘ Copy Full Sequence</button>
+    </div>`;
+  seq.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-function copySeq(id){
-  const el=document.getElementById(`sb_${id}`);if(!el)return;
-  navigator.clipboard.writeText(el.innerText).catch(()=>{});
-  const btn=document.getElementById(`seq_${id}`).querySelector('.btn-copy-seq');if(!btn)return;
-  const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=orig,2000);
+
+function copySeq(id) {
+  const el = document.getElementById(`sb_${id}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).catch(() => {});
+  const btn = document.getElementById(`seq_${id}`).querySelector('.btn-copy-seq');
+  if (!btn) return;
+  const orig = btn.textContent; btn.textContent = '✓ Copied!';
+  setTimeout(() => btn.textContent = orig, 2000);
 }
 </script>
 </body>
